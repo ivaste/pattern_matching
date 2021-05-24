@@ -1,0 +1,660 @@
+An overview of the CoAP protocol architecture,
+features and its extensions
+Stefano Ivancich
+Department of Information Engineering (DEI)
+University of Padova, Italy
+Email: stefano.ivancich@studenti.unipd.it
+Student ID: 1227846
+
+systems, which rules the communication between Web
+clients and Web servers. It’s used mostly for transfer
+HTML documents between nodes. At its basis it is
+a textual request-response protocol where clients and
+servers exchange messages constituted by an header and
+an optional body. Is a stateless protocol, that basically
+means that each request-response is independent and
+neither the client nor the server has to keep trace
+of the exchanged messages. This simplifies the implementation of the protocol and makes it more scalable.
+And is designed to favors the use of intermediaries or
+proxies, typically for caching or security purposes. It
+is well suited for nodes with relatively high computational power, but often it can be too demanding in
+terms of bandwidth and processing requirements for the
+constrained devices that we are considering in the IoT
+scenario. So, a protocol called Constrained Application
+Protocol (CoAP) defined in the RFC 7252 [2] was
+developed as a lightweight counterpart of HTTP in order
+to simplify integration with the web but at the same
+time address the needs of constrained devices and constrained networks, indeed nodes often have 8-bit microcontrollers with small amounts of ROM and RAM, while
+constrained networks often have high packet error rates
+and an indicative throughput of 10s kbit/s. This protocol
+is used for machine-to-machine (M2M) communication
+and, as said before, is quite similar to HTTP, but with
+some relevant differences. It uses smaller and simplified
+headers, supports asynchronous REST, publish/subscribe
+message exchanges, provides multicast support, very low
+overhead, and simplicity for constrained environments.
+The aim of CoAP is not to indiscriminately compress
+the HTTP protocol, but instead to provide a subgroup
+of REST in common with HTTP that are optimized for
+M2M communications.
+In this work, we focus on the IoT communication protocol CoAP; in particular, we overview its architecture,
+
+Fig. 1: Stefano Ivancich in 2021
+Abstract—Today (2021), several billions of devices are
+connected daily to the internet, so a very huge amount of a
+data is sent and managed every second. In the next years,
+it is expected that even more devices like sensors, actuators
+for domestic or industrial usage will connect to the
+internet. In this context, we review an HTTP like protocol
+called Constrained Application Protocol (CoAP) that was
+developed by the Internet of Engineering Task (IETF)
+to work on constrained IoT devices operating in lossy
+environments. Although this protocol is lightweight and
+efficient compared to other IoT protocols such as HTTP
+or MQTT, it has some limitation in some scenarios, for
+example when strong reliability is needed or in streaming
+applications. For this reason we also overview, from the
+most recent literature some modifications, one is CoAP
+over TCP that guarantee reliability, another is CoAP-SC
+that has a good mechanism to handle with error and flow
+control that are crucial in streaming applications.
+Index Terms—CoAP, IoT, TCP, UDP, Streaming, enhancements in CoAP
+
+I. I NTRODUCTION
+The Hypertext Transfer Protocol (HTTP) [1] is one
+of the most widely used application layer protocol
+for distributed, collaborative, hypermedia information
+
+1
+
+Codes. Both request and responses can be confirmable
+or non-confirmable. We can think of CoAP a two-layer
+protocol, one layer for messaging that deal with the
+transport layer and with asynchronous messages, and a
+Request/Response layer that manages request/response
+interactions using Method and Response Codes. You can
+see this in Fig. 2.
+
+features and extensions.
+The report is structured as follows: in Section II we
+describe the communication problems in constrained
+networks, in Section III we give an overview of the
+CoAP protocol that tackle those problems, and in Section IV we describe it’s message format, it’s transmission
+and semantic. In Section V we describe the CoAP
+methods definitions, caching and proxying. In Section
+VI we review some extension and modifications of the
+standard CoAP protocol. And finally in Section VII we
+make some extra considerations on future developments
+and possible improvements.
+II. C ONSTRAINED D EVICES AND N ETWORKS
+Edge networks may operate in a huge variety of
+environments and conditions that requires a careful
+attention on their use. Usually, data flowing throw edge
+networks are ultimately destined for the Internet, so they
+should be designed with that transition in mind and
+therefore it makes some sense to emulate some ideas
+in IoT edge network design. The so-called Constrained
+networks are characterized as Low-Power and Lossy
+Networks (LLNs). Those kinds of networks are used
+often in combination with constrained devices that, have
+limited processing and powers supply, in Table 1 you
+can see a classification of constrained devices. LLNs are
+constrained because the cost, the limited nodes capabilities, limited power, limited spectrum, high density and
+interference. So they need smaller (compressed) headers
+and smaller payloads/packets to keep bit error rates
+low and permit media sharing. That’s where lightweight
+communication protocols like CoAP comes into play.
+
+Fig. 2: Abstract Layering of CoAP
+Now we are going to explain these 2 layers in depth.
+A. Messaging Model
+The message layer is the lowest layer of CoAP and
+is based on the exchange of messages over the transport
+layer, in the base case the UDP datagrams, but in the
+following section we will see how it adapts to TCP.
+CoAP uses a binary header of fixed length (4 bytes),
+that can be followed by a compact binary options and the
+payload. Each CoAP message has a unique ID (16-bit)
+used to detect duplicates and for reliability, allowing an
+exchange of up to 250 messages per second. A message
+can be sent reliably if it is of type Confirmable (CON),
+a response will be provided with the Acknowledgement
+message (ACK) type with the same Message ID or with
+the Reset message (RST) if the receiver is not able to
+process the message sent. This process can be seen in
+Fig. 3.
+A non-reliable message can be sent as Nonconfirmable message (NON) that won’t have any acknowledge response, but if the recipient has some troubles processing such message, it can reply with the Reset
+message (RST). Even if these messages are unreliable,
+they have a unique ID. This process can be seen in Fig.
+4. CoAP message types are summarized in Table 2.
+
+III. C ONSTRAINED A PPLICATION P ROTOCOL
+(C OAP)
+The way CoAP interact is very similar to the HTTP
+client/server model, but is common to use a node performing both client and server. A CoAP request is sent
+by a client to a server in order to request an action
+(specified with a Method Code parameter) on a particular
+resource identified by an URI. Then the server returns a
+response containing a Response Code, with the resource
+or an error message. CoAP differs from HTTP when
+dealing these messages exchanges because it handles
+them asynchronously over the transport layer (in this
+case the UDP, in section VI we will see how CoAP
+works over TCP). 4 types of message are supported by
+CoAP: Confirmable, Non-confirmable, Acknowledgement and Reset. Those messages can transport request
+or responses based on their Method Codes or Response
+
+2
+
+Name
+
+Data size
+(eg. RAM)
+
+Code Size
+(eg. ROM)
+
+Class 0, C0
+
+ 10KB
+
+ 100KB
+
+Class 1, C1
+
+∼10KB
+
+∼100KB
+
+Class 2, C2
+
+∼50KB
+
+∼250KB
+
+Functionality
+Very constrained devices.
+Cannot communicate with the Internet directly.
+IP and security capable, cannot easily communicate using full
+IP stacks, such as HTTP. May be able to use CoAP over UDP.
+Support most protocol stacks.
+
+TABLE 1: Classification of constrained devices
+Message type
+Confirmable
+Non-Confirmable
+Reset
+Acknowledgment
+
+Description
+Reliable message delivery, the recipient is required to confirm with an acknowledgment
+Not acknowledged, delivery is not guaranteed
+Indicates that a message was received, but the recipient is not able to process it
+Indicates that the message was received and processed correctly
+TABLE 2: CoAP message types
+
+sponse. This process can be seen in Fig. 5.
+
+Fig. 3: Reliable message transmission
+
+Fig. 5: Example of GET Requests that receive Piggybacked Responses
+If the server is not able to respond immediately to
+the Confirmable message, it sends back and empty ACK
+message, otherwise the client will continue to retransmit
+the request. And when it’s ready to respond, it sends
+a Confirmable message with the content that must be
+confirmed with an ACK message from the client. This
+mechanism is called ”separate response” and can be seen
+in Fig. 6.
+Instead, if the request is sent by using a Nonconfirmable message (NON), the response is sent also
+as Non-confirmable that you can see in Fig. 7.
+
+Fig. 4: Unreliable message transmission
+B. Request/Response Model
+The CoAP Request/Response is the top abstract layer.
+Request and responses are carried by the CoAP messages, that includes a Method Code or a Response code.
+A Token is used to pair the response to the corresponding
+request. The request is sent using a Confirmable (CON)
+or Non-confirmable (NON) message. If the request is
+sent by a Confirmable message, the server responds with
+an Acknowledgement (ACK) message with the resource
+or with an Error Code, this is called piggybacked Re-
+
+C. Intermediaries, Caching and Resource Discovery
+To fulfill request efficiently CoAP offer the caching
+of responses. Since we are working on constrained
+networks, CoAP also offer the possibility of creating
+a proxy, this is due to restrain network traffic, boost
+performances, to access to the data of devices in sleep
+mode, and to provide security. Like in HTTP proxying,
+
+3
+
+IV. M ESSAGE F ORMAT, T RANSMISSION AND
+S EMANTIC
+In this section we are going to cover the CoAP
+message format. Since this protocol was created to work
+on constrained networks, it uses compact messages and,
+to avoid the fragmentation, it occupies the data section
+of just one UDP datagram, but it can also be transported
+over TCP.
+A. Message Format
+The message format is composed by a 4-byte header,
+followed by a Token value which length is specified in
+the TKL header field (0 to 8 bytes), as said before this
+token is used to match requests and responses. Then a
+sequence of 0 or more options in the Type-Length-Value
+(TLV) format. An Option might be followed by the end
+of the message, by another Option, or by the Payload
+Marker (0xFF) which indicates the end of options and
+the start of the payload that can take the rest of the
+datagram size. This format can be seen in Fig. 9. In
+particular the header fields are defined as follow:
+
+Fig. 6: A GET Request with a Separate Response
+
+•
+•
+
+•
+
+•
+
+Fig. 7: A Request and a Response Carried in Nonconfirmable Messages
+•
+
+the destination IP address is the address of the proxy
+while the resource’s URI is inside the request. There
+is also the possibility to map CoAP to HTTP and the
+other way around. This conversion can be realized by
+a cross-proxy (a cross-protocol proxy) that converts
+Method/Response codes, options o the corresponding
+in HTTP. As final note of this section, since in the
+context of M2M interactions Resource Discovery is
+pretty important, CoAP support it using the CoRE Link
+Format.
+
+Version (Ver): 2-bit unsigned integer.
+Type (T): 2-bit unsigned integer. Confirmable (0),
+Non-confirmable (1), Acknowledgement (2), or Reset (3)
+Token Length (TKL): 4-bit unsigned integer. Indicates the length of the variable-length Token field
+(0-8 bytes). Lengths 9-15 are reserved, MUST NOT
+be sent, and MUST be processed as a message
+format error.
+Code: 8-bit unsigned integer, split into a 3-bit
+class (most significant bits) and a 5-bit detail (least
+significant bits). Class can indicate a request (0),
+a success response (2), a client error response (4),
+or a server error response (5). Code 0.00 indicates
+an Empty message. In case of a request, the Code
+field indicates the Request Method; in case of a
+response, a Response Code.
+Message ID: 16-bit unsigned integer in network
+byte order.
+
+The option format requires to each option instance
+to specify the Option Number of the CoAP option, the
+length of the Option Value and the Option Value itself.
+More than one instance of the same option can be used
+by specifying an option delta of zero. We don’t go deeper
+in this concept because its quite complicated and long,
+we limit ourselves to show the structure in Fig. 8, for
+further information, read the RFC7252 [2].
+
+4
+
+a RST message.
+Messages transmitted without reliability: usually
+this are messages that are sent regularly, like readings
+from a sensor where the eventual success is sufficient.
+Those kinds of messages can be sent marking the proper
+header field as Non-Confirmable (NON) message. This
+kind of messages must not be empty.
+C. Message semantic
+CoAP uses a similar request/response model of HTTP,
+basically a client sends one or more CoAP requests
+to a server, which sends back CoAP responses. But,
+unlike HTTP, those request and responses are not sent
+after a pre-established connection, there are sent asynchronously.
+Requests: consist of a method to be applied to a
+specific resource, the resource identifier, the payload and
+the internet media type (if any), and the metadata about
+the request (optional). The methods supported by CoAP
+are GET, POST, PUT, and DELETE. They are safe (only
+on retrieval) and idempotent (when invoked multiple
+times have the same effect) like for the equivalent HTTP.
+Responses: they are matched with the request by a
+Token generated by the client. They are identified by the
+Code field in the header. Like for the HTTP Status Code
+the CoAP Response Code indicates the result of trying
+to satisfy the client request. The 8-bit Response Code
+(Fig. 10) define the class (3-bit) and the detail (5-bit)
+of the response. There are 3 main classes of Response
+Code:
+• 2 - Success: indicates that the request was successfully received, understood and accepted.
+• 4 - Client Error: the request contains bad syntax or
+cannot be fulfilled
+• 5 - Server Error: the server failed to fulfill an
+apparently valid request
+
+Fig. 8: CoAP Message Option Format
+B. Message Transmission
+CoAP messages are used to transport request and
+responses between CoAP endpoints, and they are exchange asynchronously. Since UDP is not reliable transport protocol, those messages may not arrive in order,
+they can be missing or can be duplicated. So, CoAP
+uses a small mechanism to assure reliability that can
+detect duplicates for both Confirmable (CON) and NonConfirmable (NON) messages, and implements a simple
+stop-and-wait retransmission reliability with exponential
+back-off for Confirmable messages.
+Messages and Endpoints: an endpoint is the source
+or destination of a CoAP message and is identified by an
+IP address and a UDP port number. As we say, there are
+various types of messages, those messages can carry a
+request, a response or be empty. If a message is empty,
+it’s Code field must be set to 0.00, the Token Length
+field (TKL) to 0 and id there are bytes present in the
+payload, they are interpreted as error message.
+Messages Transmitted Reliably: the message must
+be marked as Confirmable (CON) in the proper header
+field. This kind of message always carries a request, a
+response or a Reset, so a receiver must return an ACK or
+reject it. The rejection of a confirmable message contains
+the Message ID and the payload is empty. The sender
+keeps retransmitting the message at increasing intervals
+until it receives an ACK, a RST or reach the limit of
+attempts. The initial timeout is set to a random duration
+between ACK_TIMEOUT (default is 2 seconds) and
+(ACK_TIMEOUT * ACK_RANDOM_FACTOR (default is
+1.5)), and the retransmission counter starts from 0. When
+the timeout is reached and the retransmission counter is
+less than MAX_RETRANSMIT (default is 4), the message
+is sent again, the retransmission counter is incremented,
+and the timeout is doubled. This continues until the
+counter reach MAX_RETRANSMIT or the sender receive
+
+V. C OAP M ETHODS , C ACHING AND P ROXYING
+A. Method definitions
+Resources are organized hierarchically and governed
+by a potential CoAP origin server listening for CoAP
+requests (”coap” or ”coaps”). CoAP URI scheme is
+defined as follows: coap-URI = ”coap:” ”//” host [ ”:”
+port ] path-abempty [ ”?” query ]
+Where HOST must not be empty and PORT indicates the
+UDP port, if it’s empty the default 5683 is used.
+CoAP implements methods, very similar to HTTP, with
+which clients can call an action on a specific resource
+identified the previously mentioned URIs. A request
+with a method that is not supported, returns a 4.05
+
+5
+
+Fig. 9: CoAP Message Format
+
+B. Caching
+We just briefly note that CoAP endpoints have the
+possibility to cache the responses in order to reduce the
+response time and bandwidth usage. The main purpose
+of caching in CoAP is to reuse a response message to
+satisfy a current request that is equivalent to a past one.
+The cacheability of a response depends on the Response
+Code.
+
+Fig. 10: Structure of a Response Code
+(Method Not Allowed) response. The methods supported
+by CoAP are:
+•
+
+•
+
+•
+
+•
+
+GET: retrieves a representation for the resources
+identified by the URI. If this is possible, the server
+returns a 2.03 (Valid) or 2.05 (Content) Response
+Code. This method is safe (it MUST NOT take any
+other action on a resource other than retrieval) and
+idempotent.
+POST: results in a creation, update or deletion of a
+resource. If a resource is created, the server returns
+s 2.01 (Created) Response Code with the URI.
+If there is an update of the resource, the server
+returns a 2.04 (Changed) Response Code. Instead,
+if a resource is deleted, the server returns a 2.02
+(Deleted) Response Code. POST is not safe and not
+idempotent. Is not idempotent because its effect is
+determined by the origin server and dependent on
+the target resource.
+PUT: result in the creation or update of the resource
+specified by the URI given. The response codes
+are the same as POST. PUT is not safe but is
+idempotent.
+DELETE: results in the deletion of the resource
+identified by the URI given. If succeed, a 2.02
+(Deleted) Response code is returned. DELETE is
+not safe but is idempotent.
+
+C. Proxying
+Proxies can serve many different purposes; we can
+distinguish them in 3 main types:
+• Forward-proxies: CoAP request on such proxies
+can be made as Confirmable (CON) or NonConfirmable (NON), but the request URI is specified as a string in the Proxy-Uri Option instead of
+being split in URI-Host, URI-Port, URI-Path and
+URI-Query Options. If the endpoint is not able to
+act as a proxy, it returns a 5.05 (Proxying Not
+Supported) response.
+• Reverse-Proxies: offer various resources as if they
+were its own resources.
+• Cross-Proxies: can translate a CoAP request/response to a different protocol.
+More specifically, a particular kind of cross-proxying is
+of interest in IoT when using CoAP, that is the CrossProtocol Proxying between CoAP and HTTP, that’s
+because CoAP support a limited subset of HTTP functionalities. Only the request/response model of CoAP
+is mapped to HTTP. The Confirmable/Non-confirmable
+messages model is invisible and has no effect on a proxy
+function.
+CoAP-HTTP Proxying: enables CoAP clients to
+access resources that are hosted on a HTTP server. When
+sending a request to the CoAP-HTTP proxy, a CoAP
+client has to set the Proxy-URI or Proxy-Scheme Option
+to ”http” or ”https”. Since the basic methods of CoAP
+are very similar to HTTP, performing a request is not
+much different. If the proxy is not able to service the
+
+The difference between POST and PUT is that PUT
+in generally used to replace the existing content of
+a resource, while POST is used to send new data.
+Some other IoT frameworks uses the use of CRUD
+methods (CREATE, RETRIEVE, UPDATE, DELETE)
+to overcome this ambiguity.
+A brief summary of CoAP methods can also be seen in
+Table 3.
+
+6
+
+Methods
+GET
+PUT
+POST
+DELETE
+
+Description
+Retrieves a representation of information corresponding to the specified URI
+Requests to update the identified resource be updated with the enclosed representation, or create new
+Request to process the enclosed representation
+Delete the resource identified by the URI
+TABLE 3: CoAP methods
+
+Messaging Model: since TCP provides reliable transmission, CoAP Confirmable and Acknowledge message
+are no longer needed. So, the type field and Message ID
+field in the header are not present anymore, instead the
+fields for expressing the length of the message (Length
+and Extended Length) are present because TCP does not
+provide this information.
+Message Format: is very similar of the one over UDP,
+except for type, Message ID and Version fields that are
+removed as previously said. This format can be seen in
+Fig. 11.
+Message Transmission: after the TCP connection is
+established, the CoAP endpoints send a CSM (Capabilities and Settings Message) as first message of the
+connection. This special message initializes the settings
+and capabilities of the endpoints, if there are no options
+set in this message, the defaults are used. Request and
+response are sent asynchronously over the Transport
+Connection. So, a client can send multiple requests
+without waiting for responses, and those responses can
+be returned in any order but in the same connection. The
+TCP protocol is bidirectional, this implies that requests
+and responses can be sent by both endpoints. TCP also
+support retransmission and deduplication of messages.
+
+request with the HTTP URI, it returns a 5.05 (Proxying
+Not Supported) response. If the proxy is unable to get
+the requested resource by the HTTP server in a given
+timeframe, it returns a 5.04 (Gateway Timeout) response.
+If the resource is not understood, it returns a 5.02 (Bad
+Gateway) response. The response payload must be a
+representation of the HTTP resource, and the ContentFormat Option should be set accordingly.
+HTTP-CoAP Proxying: enables HTTP clients to
+access resources hosted on CoAP servers. When sending
+a request to the HTTP-CoAP proxy, an HTTP client
+has to set the Request-Line to ”coap” or ”coaps”. If
+the proxy is not able to service the request with the
+CoAP URI, it returns a 501 (Not Implemented) response.
+If the proxy is not able to get the requested resource
+by the CoAP server in a given timeframe, it returns a
+504 (Gateway Timeout) response. If the resource is not
+understood, it returns a 502 (Bad Gateway) response.
+Since the methods OPTION, TRACE and CONNECT
+are not implemented in CoAP, if those one are called,
+the proxy returns a 501 (Not Implemented) error.
+VI. C OAP ENHANCEMENTS
+In this section we are going to review some enhancements and extensions of the standard CoAP protocol. In
+particular we explore the CoAP over TCP and CoAP for
+streaming.
+
+B. CoAP for Streaming
+In the last years, a variety of streaming application
+in IoT are becoming more common, in this paper the
+authors explore the usage of the CoAP protocol for this
+task. The conventional CoAP over UDP and CoAP over
+TCP schemes can be used for reliable services as we
+seen. However, they do not provide error handling and
+flow controls suitable to facilitate the streaming data
+transmission at the sender, this leads to a degradation
+of the throughput performances, especially in sensor
+wireless lossy networks. For example, if in CoAP over
+UDP a message gets lost, its retransmission will happen
+after a timeout, making the error recovery to increase
+transmission delays. In CoAP over TCP the packet can
+be recovered quickly using the TCP fast recovery, but
+this mechanism adds overhead in the IoT environment.
+Moreover, the complexity of TCP is not very suitable for
+
+A. CoAP over TCP
+The standard CoAP operates above the User Datagram
+Protocol (UDP) accomplishing lightweight messaging.
+But the main downsides are that UDP cannot provide
+reliability and some networks, especially enterprise networks, do not froward UDP packets. For those reasons
+and that the demand for the use of TCP in IoT is
+increasing, CoAP over TCP was proposed [3]. TCP has
+congestion control and flow control mechanism, more
+sophisticated that the one of CoAP over UDP, but uses a
+larger packet size, more round trips, and increased RAM
+requirements. The main difference between CoAP over
+TCP and over UDP is on the message layer, while the
+request/response model remains the same.
+
+7
+
+Fig. 11: CoAP over TCP Message Format
+
+real time streaming in IoT environment. To overcome
+these problems, the authors [4] proposed a CoAP-based
+streaming control (CoAP-SC), which is an extension of
+CoAP over UDP with error handling and flow controls
+for throughput enhancement. The scheme is designed by
+assigning a sequence number (SN) to each data message,
+and an ACK number (AN) is returned by the receiver.
+Initialization for CoAP-SC: with a POST message
+the sender requests the creation of a new resource,
+this request include authentication information, buffer
+size and other parameters associated with the streaming
+service. After the creation of the resource, the receiver
+returns a 2.01 response message with the URL of this
+new resource. Then, the sender sends a GET request
+to that URL, and the receiver responds back with a
+2.05 response message. All GET and their response
+messages contains a sequence number (SN) and ACK
+number (AN), where SN is sequentially assigned on each
+message sent by the sender, and the AN is set by the
+receiver to tell that that message was received correctly.
+The AN is cumulative. In the initialization process SN
+and AN are set to 0. This initialization process can be
+seen in Fig 12.
+Error Handling for CoAP-SC: the first message
+sent by the sender has SN=1 and AN=0. Each time
+the receiver gets a message from the sender, it updates
+its own AN number to be equal to the largest SN
+value that has been received and cumulatively. So, if
+the receiver does not receive any data message for a
+certain amount of time, it sends an ACK message to tell
+the sender of the AN status. In the normal streaming
+flow, the receiver will receive a message with SN =
+ANsent + 1, and the next message it will send, will have
+AN = SNreceived = ANsent + 1. So, if a message gets
+lost, the receiver will determine that by checking if this
+condition is true: SNreceived − ANsent > 1. When this
+loss is detected, the receiver sends an ACK message
+for a retransmission request that includes the SN of the
+message to be transmitted, and this ACK is retransmitted
+until the data lost is correctly received. An example of
+
+Fig. 12: CoAP-SC Initialization
+this mechanism can be seen in Fig. 13.
+Flow Control for CoAP-SC: ACK messages are used
+also for flow control, by providing the up-to-date AN
+information to the sender, in this way facilitating it to
+transmit as much data as possible, resulting a throughput
+enhancement.
+CoAP Option for CoAP-SC: the Option header is
+composed by 4bit Option Delta, 4-bit Option Length,
+4-byte Sequence number and 4-byte ACK number. This
+option format can be seen in Fig. 14.
+VII. C ONCLUDING R EMARKS
+In this paper an overview of the CoAP protocol has
+given. Since the basic architecture of CoAP may perform
+
+8
+
+Fig. 14: CoAP-SC Message Option Format
+mechanism to deal with errors and flow control that are
+crucial in streaming. On the other hand, it seems that
+this Streaming scheme still requires some more works
+to reduce the packet size for IoT environment.
+VIII. ACKNOWLEDGMENT
+This work is presented for the final grade of the
+”Internet of Things and Smart Cities” course, held by
+prof. Lorenzo Vangelista at the University of Padova in
+2021.
+R EFERENCES
+[1] M. Belshe, R. Peon, and M. Thomson, “Hypertext Transfer
+Protocol Version 2 (HTTP/2).” RFC 7540, May 2015.
+[2] Z. Shelby, K. Hartke, and C. Bormann, “The Constrained Application Protocol (CoAP).” RFC 7252, June 2014.
+[3] C. Bormann, S. Lemay, H. Tschofenig, K. Hartke, B. Silverajan,
+and B. Raymor, “CoAP (Constrained Application Protocol) over
+TCP, TLS, and WebSockets.” RFC 8323, Feb. 2018.
+[4] J.-H. Jung, M. Gohar, and S.-J. Koh, “Coap-based streaming
+control for iot applications,” Electronics, vol. 9, no. 8, 2020.
+
+Fig. 13: CoAP-SC Error Handling example
+inefficiently in some scenarios like when strong reliability is needed and in the case of streaming applications,
+we proposed possible solutions for those problems taken
+from the most recent literature. In particular for reliability, a RFC called ”CoAP over TCP” that as its title says,
+modifies CoAP to work on the reliable transport protocol
+TCP. While for the streaming scenario, a modification
+called CoAP-SC was reviewed, that propose good a
+
+9
+
+
