@@ -54,6 +54,7 @@ f = open(file_to_check, "r",encoding='utf-8')
 string_to_check=f.read()
 f.close()
 string_to_check=string_to_check.replace("\n", " ")
+string_to_check=string_to_check.lower()
 string_to_check=string_to_check.split(" ")
 
 
@@ -67,7 +68,7 @@ ans=[False]*len(string_to_check)
 for reference_file in reference_files:
     #Read reference file
     f = open(reference_file, "r",encoding='utf-8')
-    text=f.read()
+    text=f.read().lower()
     f.close()
 
     print("Reference Text:",str(len(text.split(" "))),"words")
@@ -108,7 +109,7 @@ print("Saved")
 TODO:
     - load pdf and convert it to txt
     - select files from command line
-    - Better pattern matching algorithm
+    - Better pattern matching algorithm: https://www.toptal.com/algorithms/aho-corasick-algorithm
 
 
 """
