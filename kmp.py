@@ -40,13 +40,14 @@ def KMP(string, substring):
 
 ######################################################
 window_size=4
-reference_file="reference_files/rfc7252.txt"
+#reference_files=["reference_files/rfc7252.txt"]
 file_to_check="files_to_check/IoT_CoAP (1).txt"
 
-#Read reference
-f = open(reference_file, "r")
-text=f.read()
-f.close()
+import glob
+reference_files=[]
+for file in glob.glob('reference_files/*'):
+    reference_files.append(file)
+
 
 #Read pattern
 f = open(file_to_check, "r",encoding='utf-8')
@@ -55,19 +56,28 @@ f.close()
 string_to_check=string_to_check.replace("\n", " ")
 string_to_check=string_to_check.split(" ")
 
-print("Reference Text:",str(len(text.split(" "))),"words")
+
 print("File to check:",len(string_to_check),"words")
 print("Window size:",window_size,"words")
 
 ######################################################
 ans=[False]*len(string_to_check)
-for i in range(len(string_to_check)-window_size):
-    print("Matching: "+str(100*i//len(string_to_check))+"%",end="\r", flush=True)
 
-    pattern=" ".join(string_to_check[i:i+window_size])
-    if KMP(text,pattern):
-        for j in range(i,i+window_size):
-            ans[j]=True
+#for each reference files
+for reference_file in reference_files:
+    #Read reference file
+    f = open(reference_file, "r",encoding='utf-8')
+    text=f.read()
+    f.close()
+
+    print("Reference Text:",str(len(text.split(" "))),"words")
+    for i in range(len(string_to_check)-window_size):
+        print("\tMatching: "+str(100*i//len(string_to_check))+"%",end="\r", flush=True)
+
+        pattern=" ".join(string_to_check[i:i+window_size])
+        if KMP(text,pattern):
+            for j in range(i,i+window_size):
+                ans[j]=True
 
 ######################################################
 print("Saving...")
@@ -98,7 +108,6 @@ print("Saved")
 TODO:
     - load pdf and convert it to txt
     - select files from command line
-    - multiple references files
     - Better pattern matching algorithm
 
 
