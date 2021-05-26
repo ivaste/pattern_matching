@@ -57,14 +57,14 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](https://github.com/ivaste/pattern_matching)
 
 Find text matching of one `.txt` file given several other `.txt` files.
 
 ### Built With
 
 * [Python 3](https://www.python.org/)
-* [Knuth–Morris–Pratt algorithm](https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm)
+* [Knuth–Morris–Pratt algorithm](https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm) (In future release will be used a better algorithm)
 
 
 
@@ -124,4 +124,4 @@ Project Link: [https://github.com/ivaste/pattern_matching](https://github.com/iv
 [license-shield]: https://img.shields.io/github/license/ivaste/pattern_matching.svg?style=for-the-badge
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/stefano-ivancich/
-[product-screenshot]: https://github.com/ivaste/pattern_matching/raw/master/images/pattern_matching.png
+[product-screenshot]: https://github.com/ivaste/pattern_matching/blob/main/images/pattern_matching.png
