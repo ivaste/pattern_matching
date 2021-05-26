@@ -222,53 +222,54 @@ Acknowledgment
 Description
 Reliable message delivery, the recipient is required to confirm with an acknowledgment
 Not acknowledged, delivery is not guaranteed
-Indicates that a message was received, but the receiver is not able to process/handle it
+Indicates that a message was received, but the receiver is not capable to process/handle it
 Indicates that the message was received and processed correctly
 TABLE 2: CoAP message types
 
 Instead, if the request is sent by using a Nonconfirmable message (NON), the response is sent also
 as Non-confirmable that you can see in Fig. 7.
 
-on constrained networks, it uses compact messages and,
-to avoid the fragmentation, it occupies the data section
-of just one UDP datagram, but it can also be transported
-over TCP.
+work on constrained networks, it implements compact
+messages and, to avoid the fragmentation, it uses the
+data section of just one UDP datagram, but it can also
+be transported over TCP.
 A. Message Format
 The message format is composed by a 4-byte header,
-followed by a Token value which length is specified in
-the TKL header field (0 to 8 bytes), as said before this
-token is used to match requests and responses. Then a
-sequence of 0 or more options in the Type-Length-Value
-(TLV) format. An Option might be followed by the end
-of the message, by another Option, or by the Payload
-Marker (0xFF) which indicates the end of options and
-the start of the payload that can take the rest of the
-datagram size. This format can be seen in Fig. 9. In
-particular the header fields are defined as follow:
+followed by a Token value which length is stated in the
+TKL header field (0 to 8 bytes), as said before the role
+of this token is to match requests with responses. Then
+a sequence of 0 or more options in the Type-LengthValue (TLV) format. An Option might be followed by
+the end of the message, by some other Option, or by the
+0xF F (the Payload Marker) which express the end of
+the options section and the start of the payload which
+may take the rest of the datagram size. This format can
+be seen in Fig. 9. In particular the header fields are
+defined as follow:
 • Version (Ver): 2-bit unsigned integer.
-• Type (T): 2-bit unsigned integer. Confirmable (0),
-Non-confirmable (1), Acknowledgement (2), or Reset (3)
-• Token Length (TKL): 4-bit unsigned integer. Indicates the length of the variable-length Token field
-(0-8 bytes). Lengths 9-15 are reserved, MUST NOT
-be sent, and MUST be processed as a message
-format error.
-• Code: 8-bit unsigned integer, split into a 3-bit
+• Type (T): 2-bit unsigned integer. 0=Confirmable,
+1=Non-confirmable, 2=Acknowledgement, or
+3=Reset
+• Token Length (TKL): 4-bit unsigned integer. Represents the length of the variable-length Token
+field which size can be between 0 and 8 bytes.
+Lengths 9-15 must be reserved, and not sent, and
+are processed as a message format error.
+• Code: 8-bit unsigned integer, divided into a 3-bit
 class (most significant bits) and a 5-bit detail (least
-significant bits). Class can indicate a request (0),
-a success response (2), a client error response (4),
-or a server error response (5). Code 0.00 indicates
-an Empty message. In case of a request, the Code
-field indicates the Request Method; in case of a
-response, a Response Code.
+significant bits). Class are 0=request, 2=success
+response, 4=client error response, or 5=server error
+response. For example 0.00=Empty message. In the
+case of a request, this field express the Request
+Method; in case of a response, a Response Code.
 • Message ID: 16-bit unsigned integer in network
 byte order.
-The option format requires to each option instance
-to specify the Option Number of the CoAP option, the
-length of the Option Value and the Option Value itself.
-More than one instance of the same option can be used
-by specifying an option delta of zero. We don’t go deeper
+The option format requires to each option instance to
+specify its Option Number, its Value field length and
+the Option Value itself. More than one instance of the
+same option can be set by specifying an option delta of
+zero. We don’t go further on this concept because its
 
-Fig. 7: A Request and a Response Carried in Nonconfirmable Messages
+Fig. 7: Request and Response sent by Non-confirmable
+Messages
 C. Intermediaries, Caching and Resource Discovery
 To fulfill request efficiently CoAP offer the caching
 of responses. Since we are working on constrained
@@ -276,7 +277,7 @@ networks, CoAP also offer the possibility of creating
 a proxy, this is due to restrain network traffic, boost
 performances, to access to the data of devices in sleep
 mode, and to provide security. Like in HTTP proxying,
-the destination IP address is the address of the proxy
+the IP address of destination is the address of the proxy
 while the resource’s URI is inside the request. There
 is also the possibility to map CoAP to HTTP and the
 other way around. This conversion can be realized by
@@ -289,52 +290,55 @@ Format.
 IV. M ESSAGE F ORMAT, T RANSMISSION AND
 S EMANTIC
 In this section we are going to cover the CoAP
-message format. Since this protocol was created to work
+message format. Since this protocol was created to
 
 4
 
-less than MAX_RETRANSMIT (default is 4), the message
-is sent again, the retransmission counter is incremented,
-and the timeout is doubled. This continues until the
-counter reach MAX_RETRANSMIT or the sender receive
-a RST message.
+the timeout is reached and the retransmission counter is
+less than MAX_RETRANSMIT (default is 4), the message
+is sent again, the counter for retransmission is incremented, and the timeout is doubled. This continues until
+the counter reach MAX_RETRANSMIT or the sender
+receive a RST message.
 Messages transmitted without reliability: usually
-this are messages that are sent regularly, like readings
-from a sensor where the eventual success is sufficient.
-Those kinds of messages can be sent marking the proper
-header field as Non-Confirmable (NON) message. This
-kind of messages must not be empty.
+this are messages that are sent regularly, like data from
+a sensor where the eventual success is enough. Those
+kinds of messages can be sent marking the proper header
+field as Non-Confirmable (NON) message. This kind of
+messages must not be empty.
 
-in this concept because its quite complicated and long,
-we limit ourselves to show the structure in Fig. 8, for
-further information, read the RFC7252 [2].
+quite complicated and long, we limit ourselves to show
+the structure in Fig. 8, for further information, read the
+RFC7252 [2].
 
 C. Message semantic
-CoAP uses a similar request/response model of HTTP,
-basically a client sends one or more CoAP requests
-to a server, which sends back CoAP responses. But,
-unlike HTTP, those request and responses are not sent
-after a pre-established connection, there are sent asynchronously.
+CoAP uses an analogous request/response model of
+HTTP, basically a client might sends several CoAP
+requests to a server, which sends back CoAP responses.
+But, unlike HTTP, those request and responses are not
+sent after a pre-established connection, there are sent
+asynchronously.
 Requests: consist of a method to be applied to a
-specific resource, the resource identifier, the payload and
-the internet media type (if any), and the metadata about
-the request (optional). The methods supported by CoAP
+specific resource, the resource identifier, the payload
+and the internet media type (if any), and the request’s
+metadata (optional). The methods supported by CoAP
 are GET, POST, PUT, and DELETE. They are safe (only
 on retrieval) and idempotent (when invoked multiple
 times have the same effect) like for the equivalent HTTP.
 Responses: they are matched with the request by a
-Token generated by the client. They are identified by the
-Code field in the header. Like for the HTTP Status Code
-the CoAP Response Code indicates the result of trying
-to satisfy the client request. The 8-bit Response Code
-(Fig. 10) define the class (3-bit) and the detail (5-bit)
-of the response. There are 3 main classes of Response
-Code:
-• 2 - Success: indicates that the request was successfully received, understood and accepted.
-• 4 - Client Error: the request contains bad syntax or
-cannot be fulfilled
-• 5 - Server Error: the server failed to fulfill an
-apparently valid request
+Token generated by the client. They can be identified
+using the Code field in the header. Like for the HTTP
+Status Code the CoAP Response Code express the
+result of trying to satisfy the client request. The (8-bit)
+Response Code (Fig. 10) define the class (3-bit) and the
+detail (5-bit) of the response. There are 3 main classes
+of Response Code:
+• 2 (Success): indicates that the request has been
+successfully received, understood and accepted.
+• 4 (Client Error): the request cannot be fulfilled
+or contains syntax that the server is not able to
+understand.
+• 5 (Server Error): the request is valid but the server
+is not able to fulfill it.
 
 Fig. 8: CoAP Message Option Format
 B. Message Transmission
@@ -342,53 +346,50 @@ CoAP messages are used to transport request and
 responses between CoAP endpoints, and they are exchange asynchronously. Since UDP is not reliable transport protocol, those messages may not arrive in order,
 they can be missing or can be duplicated. So, CoAP
 uses a small mechanism to assure reliability that can
-detect duplicates for both Confirmable (CON) and NonConfirmable (NON) messages, and implements a simple
-stop-and-wait retransmission reliability with exponential
-back-off for Confirmable messages.
-Messages and Endpoints: an endpoint is the source
-or destination of a CoAP message and is identified by an
-IP address and a UDP port number. As we say, there are
-various types of messages, those messages can carry a
-request, a response or be empty. If a message is empty,
-it’s Code field must be set to 0.00, the Token Length
-field (TKL) to 0 and id there are bytes present in the
-payload, they are interpreted as error message.
-Messages Transmitted Reliably: the message must
-be marked as Confirmable (CON) in the proper header
-field. This kind of message always carries a request, a
-response or a Reset, so a receiver must return an ACK or
-reject it. The rejection of a confirmable message contains
-the Message ID and the payload is empty. The sender
-keeps retransmitting the message at increasing intervals
-until it receives an ACK, a RST or reach the limit of
-attempts. The initial timeout is set to a random duration
+detect duplicates for both Confirmable (CON) and NonConfirmable (NON) messages, and implements for Confirmable messages a basic reliability system based on
+stop-and-wait retransmission with exponential back-off.
+Messages and Endpoints: an endpoint,identified by
+an IP address plus an UDP port number, is the source or
+destination of a CoAP message. As we said, there are
+various types of messages, that can carry a request, a
+response or are empty. If a message is empty, it’s Code
+field is set to 0.00, the Token Length field (TKL) to 0
+and id there are bytes present in the payload, they are
+interpreted as error message.
+Messages Transmitted Reliably: to transimt with
+reliability the message has to be marked as Confirmable
+(CON) in the proper header field. This kind of message
+always carries a request, a response or a Reset, so a
+receiver must return an ACK or reject it. The rejection
+of a confirmable message contains the Message ID and
+the payload is empty. The sender keeps retransmitting
+the message at increasing intervals until it receives
+an ACK, a RST or reach the limit of attempts. At
+start, the timeout is initialized to a random duration
 between ACK_TIMEOUT (default is 2 seconds) and
 (ACK_TIMEOUT * ACK_RANDOM_FACTOR (default is
 1.5)), and the retransmission counter starts from 0. When
-the timeout is reached and the retransmission counter is
 
 V. C OAP M ETHODS , C ACHING AND P ROXYING
 A. Method definitions
-Resources are organized hierarchically and governed
-by a potential CoAP origin server listening for CoAP
-requests (”coap” or ”coaps”). CoAP URI scheme is
-defined as follows: coap-URI = ”coap:” ”//” host [ ”:”
-port ] path-abempty [ ”?” query ]
-Where HOST must not be empty and PORT indicates the
-UDP port, if it’s empty the default 5683 is used.
+Resources are organized with a hierarchy and directed
+by a CoAP origin server that listen for CoAP requests
+(”coap” or ”coaps”). CoAP URI scheme is defined as
+follows: coap-URI = ”coap:” ”//” host [ ”:” port ] pathabempty [ ”?” query ]
 
 5
 
 Fig. 9: CoAP Message Format
 
+Some other IoT frameworks uses the use of CRUD
 methods (CREATE, RETRIEVE, UPDATE, DELETE)
 to overcome this ambiguity.
 A brief summary of CoAP methods can also be seen in
 Table 3.
 
-Fig. 10: Structure of a Response Code
-
-B. Caching
+Fig. 10: Response Code structure
+Where HOST must not be empty and PORT indicates the
+UDP port, if it’s empty the default 5683 is used.
 CoAP implements methods, very similar to HTTP, with
 which clients can call an action on a specific resource
 identified the previously mentioned URIs. A request
@@ -403,18 +404,19 @@ by CoAP are:
 
 •
 
+B. Caching
 We just briefly note that CoAP endpoints have the
-possibility to cache the responses in order to reduce the
-response time and bandwidth usage. The main purpose
-of caching in CoAP is to reuse a response message to
-satisfy a current request that is equivalent to a past one.
+possibility to cache the responses in order to reduce
+the time of response and bandwidth usage. The main
+purpose of CoAP caching is to reuse a response message
+to fulfill a current request that is the same of a past one.
 The cacheability of a response depends on the Response
 Code.
 
-GET: retrieves a representation for the resources
+GET: retrieves the representation of the resource
 identified by the URI. If this is possible, the server
 returns a 2.03 (Valid) or 2.05 (Content) Response
-Code. This method is safe (it MUST NOT take any
+Code. This method is safe (it MUST NOT take
 other action on a resource other than retrieval) and
 idempotent.
 POST: results in a creation, update or deletion of a
@@ -425,26 +427,25 @@ returns a 2.04 (Changed) Response Code. Instead,
 if a resource is deleted, the server returns a 2.02
 (Deleted) Response Code. POST is not safe and not
 idempotent. Is not idempotent because its effect is
-determined by the origin server and dependent on
+established by the origin server and dependent on
 the target resource.
 PUT: result in the creation or update of the resource
-specified by the URI given. The response codes
-are the same as POST. PUT is not safe but is
-idempotent.
+specified by the URI given. Its response codes are
+the same of POST. PUT is idempotent but not safe.
 DELETE: results in the deletion of the resource
 identified by the URI given. If succeed, a 2.02
 (Deleted) Response code is returned. DELETE is
-not safe but is idempotent.
+idempotent but not safe.
 
 C. Proxying
 Proxies can serve many different purposes; we can
 distinguish them in 3 main types:
 • Forward-proxies: CoAP request on such proxies
-can be made as Confirmable (CON) or NonConfirmable (NON), but the request URI is specified as a string in the Proxy-Uri Option instead of
-being split in URI-Host, URI-Port, URI-Path and
-URI-Query Options. If the endpoint is not able to
-act as a proxy, it returns a 5.05 (Proxying Not
-Supported) response.
+can be made as Confirmable (CON) or NonConfirmable (NON), but the request URI is specified in the Proxy-Uri Option instead of being split
+in URI-Host, URI-Port, URI-Path and URI-Query
+Options. If the endpoint is not able to act as a
+proxy, it returns a 5.05 (Proxying Not Supported)
+response.
 • Reverse-Proxies: offer various resources as if they
 were its own resources.
 • Cross-Proxies: can translate a CoAP request/response to a different protocol.
@@ -456,12 +457,10 @@ messages model is invisible and has no effect on a proxy
 function.
 CoAP-HTTP Proxying: enables CoAP clients to
 access resources that are hosted on a HTTP server. When
-sending a request to the CoAP-HTTP proxy, a CoAP
 
 The difference between POST and PUT is that PUT
 in generally used to replace the existing content of
 a resource, while POST is used to send new data.
-Some other IoT frameworks uses the use of CRUD
 
 6
 
@@ -478,6 +477,7 @@ Request to process the enclosed representation
 Delete the resource identified by the URI
 TABLE 3: CoAP methods
 
+sending a request to the CoAP-HTTP proxy, a CoAP
 client has to set the Proxy-URI or Proxy-Scheme Option
 to ”http” or ”https”. Since the basic methods of CoAP
 are very similar to HTTP, performing a request is not
@@ -503,6 +503,7 @@ Since the methods OPTION, TRACE and CONNECT
 are not implemented in CoAP, if those one are called,
 the proxy returns a 501 (Not Implemented) error.
 
+sophisticated that the one of CoAP over UDP, but uses a
 larger packet size, more round trips, and increased RAM
 requirements. The main difference between CoAP over
 TCP and over UDP is on the message layer, while the
@@ -547,7 +548,6 @@ transmission at the sender, this leads to a degradation
 of the throughput performances, especially in sensor
 wireless lossy networks. For example, if in CoAP over
 UDP a message gets lost, its retransmission will happen
-after a timeout, making the error recovery to increase
 
 A. CoAP over TCP
 The standard CoAP operates above the User Datagram
@@ -557,12 +557,12 @@ reliability and some networks, especially enterprise networks, do not froward UD
 and that the demand for the use of TCP in IoT is
 increasing, CoAP over TCP was proposed [3]. TCP has
 congestion control and flow control mechanism, more
-sophisticated that the one of CoAP over UDP, but uses a
 
 7
 
 Fig. 11: CoAP over TCP Message Format
 
+after a timeout, making the error recovery to increase
 transmission delays. In CoAP over TCP the packet can
 be recovered quickly using the TCP fast recovery, but
 this mechanism adds overhead in the IoT environment.
@@ -602,9 +602,9 @@ flow, the receiver will receive a message with SN =
 ANsent + 1, and the next message it will send, will have
 AN = SNreceived = ANsent + 1. So, if a message gets
 lost, the receiver will determine that by checking if this
-condition is true: SNreceived − ANsent > 1. When this
 
 Fig. 12: CoAP-SC Initialization
+condition is true: SNreceived − ANsent > 1. When this
 loss is detected, the receiver sends an ACK message
 for a retransmission request that includes the SN of the
 message to be transmitted, and this ACK is retransmitted
@@ -618,11 +618,11 @@ enhancement.
 CoAP Option for CoAP-SC: the Option header is
 composed by 4bit Option Delta, 4-bit Option Length,
 4-byte Sequence number and 4-byte ACK number. This
-option format can be seen in Fig. 14.
 
 8
 
 Fig. 14: CoAP-SC Message Option Format
+from the most recent literature. In particular for reliability, a RFC called ”CoAP over TCP” that as its title says,
 modifies CoAP to work on the reliable transport protocol
 TCP. While for the streaming scenario, a modification
 called CoAP-SC was reviewed, that propose good a
@@ -646,12 +646,12 @@ TCP, TLS, and WebSockets.” RFC 8323, Feb. 2018.
 control for iot applications,” Electronics, vol. 9, no. 8, 2020.
 
 Fig. 13: CoAP-SC Error Handling example
+option format can be seen in Fig. 14.
 VII. C ONCLUDING R EMARKS
 In this paper an overview of the CoAP protocol has
 given. Since the basic architecture of CoAP may perform
 inefficiently in some scenarios like when strong reliability is needed and in the case of streaming applications,
 we proposed possible solutions for those problems taken
-from the most recent literature. In particular for reliability, a RFC called ”CoAP over TCP” that as its title says,
 
 9
 

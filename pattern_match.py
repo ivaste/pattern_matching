@@ -39,13 +39,24 @@ def KMP(string, substring):
     return False
 
 ######################################################
-window_size=4
-#reference_files=["reference_files/rfc7252.txt"]
-file_to_check="files_to_check/IoT_CoAP (1).txt"
 
+import sys
 import glob
+
+window_size=4
+
+print(sys.argv)
+
+#Get files paths from command line
+if len(sys.argv)!=3:
+    print("Insert file_to_check reference_files_directory")
+    sys.exit(1)
+
+file_to_check=sys.argv[1]
+
 reference_files=[]
-for file in glob.glob('reference_files/*'):
+reference_files_directory=sys.argv[2]
+for file in glob.glob(reference_files_directory+'/*'):
     reference_files.append(file)
 
 
@@ -61,17 +72,20 @@ string_to_check=string_to_check.split(" ")
 print("File to check:",len(string_to_check),"words")
 print("Window size:",window_size,"words")
 
+
 ######################################################
 ans=[False]*len(string_to_check)
 
-#for each reference files
-for reference_file in reference_files:
+#for each reference file
+for i in range(len(reference_files)):
+    reference_file=reference_files[i]
+
     #Read reference file
     f = open(reference_file, "r",encoding='utf-8')
     text=f.read().lower()
     f.close()
 
-    print("Reference Text:",str(len(text.split(" "))),"words")
+    print("Reference Text "+str(i)+":",str(len(text.split(" "))),"words")
     for i in range(len(string_to_check)-window_size):
         print("\tMatching: "+str(100*i//len(string_to_check))+"%",end="\r", flush=True)
 
@@ -80,7 +94,11 @@ for reference_file in reference_files:
             for j in range(i,i+window_size):
                 ans[j]=True
 
+
+print(str(round(100*sum(ans)/len(ans),2))+"% ("+str(sum(ans))+"/"+str(len(ans))+" words) of document match, with windw size="+str(window_size),flush=True)
+
 ######################################################
+#Save solution
 print("Saving...")
 
 solution=[]
@@ -97,10 +115,13 @@ import time
 named_tuple = time.localtime() # get struct_time
 time_string = time.strftime("%Y-%m-%d_%H-%M-%S", named_tuple)
 
-f = open("solution_"+time_string+".html", "wt",encoding='utf-8')
+file_name=file_to_check.split("/")[-1]
+
+save_path="solution/"+file_name+"_"+time_string+".html"
+f = open(save_path, "wt",encoding='utf-8')
 f.write(solution)
 f.close()
-print("Saved")
+print("Saved to "+save_path)
 
 
 
@@ -111,6 +132,8 @@ TODO:
     - select files from command line
     - Better pattern matching algorithm: https://www.toptal.com/algorithms/aho-corasick-algorithm
     - remove non standard ascii chars
+    - change output directory
+    - load automatically files_to_check
 
 
 """
