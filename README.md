@@ -1,3 +1,17 @@
+<!-- MARKDOWN LINKS & IMAGES -->
+[contributors-shield]: https://img.shields.io/github/contributors/ivaste/pattern_matching.svg?style=for-the-badge
+[contributors-url]: https://github.com/ivaste/pattern_matching/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/ivaste/pattern_matching.svg?style=for-the-badge
+[forks-url]: https://github.com/ivaste/pattern_matching/network/members
+[stars-shield]: https://img.shields.io/github/stars/ivaste/pattern_matching.svg?style=for-the-badge
+[stars-url]: https://github.com/ivaste/pattern_matching/stargazers
+[issues-shield]: https://img.shields.io/github/issues/ivaste/pattern_matching.svg?style=for-the-badge
+[issues-url]: https://github.com/ivaste/pattern_matching/issues
+[license-shield]: https://img.shields.io/github/license/ivaste/pattern_matching.svg?style=for-the-badge
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/stefano-ivancich/
+[product-screenshot]: https://github.com/ivaste/pattern_matching/blob/main/images/pattern_matching.png
+
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -112,16 +126,4 @@ Stefano Ivancich - [stefano-ivancich](https://www.linkedin.com/in/stefano-ivanci
 Project Link: [https://github.com/ivaste/pattern_matching](https://github.com/ivaste/pattern_matching)
 
 
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/ivaste/pattern_matching.svg?style=for-the-badge
-[contributors-url]: https://github.com/ivaste/pattern_matching/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/ivaste/pattern_matching.svg?style=for-the-badge
-[forks-url]: https://github.com/ivaste/pattern_matching/network/members
-[stars-shield]: https://img.shields.io/github/stars/ivaste/pattern_matching.svg?style=for-the-badge
-[stars-url]: https://github.com/ivaste/pattern_matching/stargazers
-[issues-shield]: https://img.shields.io/github/issues/ivaste/pattern_matching.svg?style=for-the-badge
-[issues-url]: https://github.com/ivaste/pattern_matching/issues
-[license-shield]: https://img.shields.io/github/license/ivaste/pattern_matching.svg?style=for-the-badge
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/stefano-ivancich/
-[product-screenshot]: https://github.com/ivaste/pattern_matching/blob/main/images/pattern_matching.png
+
