@@ -19,7 +19,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/ivaste/pattern_matching">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/othneildrew/Best-README-Template/raw/master/images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Documents Pattern Matching</h3>
@@ -61,7 +61,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Find text mathing in one file given several other files.
+Find text matching of one file given several other files.
 
 ### Built With
 
