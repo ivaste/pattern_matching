@@ -124,4 +124,4 @@ Project Link: [https://github.com/ivaste/pattern_matching](https://github.com/iv
 [license-shield]: https://img.shields.io/github/license/ivaste/pattern_matching.svg?style=for-the-badge
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/stefano-ivancich/
-[product-screenshot]: https://github.com/othneildrew/Best-README-Template/raw/master/images/logo.png
+[product-screenshot]: https://github.com/ivaste/pattern_matching/raw/master/images/pattern_matching.png
