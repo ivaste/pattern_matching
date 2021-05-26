@@ -129,11 +129,9 @@ print("Saved to "+save_path)
 """
 TODO:
     - load pdf and convert it to txt
-    - select files from command line
     - Better pattern matching algorithm: https://www.toptal.com/algorithms/aho-corasick-algorithm
     - remove non standard ascii chars
-    - change output directory
-    - load automatically files_to_check
+
 
 
 """
