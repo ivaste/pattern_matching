@@ -23,7 +23,7 @@
   <h3 align="center">Documents Pattern Matching</h3>
 
   <p align="center">
-    An awesome script for matching words of one document to others documents!
+    An awesome script for matching words of one document to other documents!
     <br />
     <a href="https://github.com/ivaste/pattern_matching/issues">Report Bug</a>
     ·
@@ -59,7 +59,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Find text matching of one file given several other files.
+Find text matching of one `.txt` file given several other `.txt` files.
 
 ### Built With
 
@@ -77,6 +77,8 @@ Find text matching of one file given several other files.
    ```sh
    git clone https://github.com/ivaste/pattern_matching.git
    ```
+
+2. Convert your `.pdf` files in `.txt` with [https://pdftotext.com/](https://pdftotext.com/)  (In future releases this step will be automated)
 2. Put your reference `.txt` files in a directory inside the `reference_files` directory
 
 3. Put the `.txt` file to check inside the `file_to_check` directory
