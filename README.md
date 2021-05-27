@@ -99,7 +99,7 @@ Find text matching of one `.txt` file given several other `.txt` files.
 
 4. Run the script
    ```sh
-   python pattern_match "files_to_check/your_file.txt" "reference_files/your_directory"
+   python pattern_match.py "files_to_check/your_file.txt" "reference_files/your_directory"
    ```
 
 5. The solution will be stored has a `.html` file inside the `solution` directory
