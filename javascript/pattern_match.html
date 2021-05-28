@@ -1,92 +1,35 @@
-<!-- https://stackoverflow.com/a/55576752 -->
 <!DOCTYPE html>
 <html>
 <head>
-    <style type="text/css">
-        .drp_zone {
-        display: inline-block;
-        border: 5px solid blue;
-        width:  200px;
-        height: 100px;
-        }
-    </style>
+  <title>Pattern matching</title>
+  <style type="text/css">
+    .drp_zone {
+    display: inline-block;
+    border: 5px solid blue;
+    width:  200px;
+    height: 100px;
+    }
+  </style>
+
+  <script src="kmp.js"></script>
 
 </head>
 
 <body>
-    
-    <span id="drop_zone" class="drp_zone">Drop Reference files here</span>
-    <span id="drop_zone2" class="drp_zone">Drop Single File to check here</span>
-    
-	<output id="list"></output>
-    <output id="txt"></output>
-	
-	
-	
-	<script>
+  <h1>Patter Matching</h1>
 
-var texts=[];
-var remaining=-1;
-// Check for the various File API support.
-if (window.File && window.FileReader && window.FileList && window.Blob) {
-  // Great success! All the File APIs are supported.
+  <span id="dropZone_texts" class="drp_zone">Drop <strong>Reference files</strong> here</span>
+  <span id="dropZone_pattern" class="drp_zone">Drop Single <strong>File to check</strong> here</span>
   
-} else {
-  alert('The File APIs are not fully supported in this browser.');
-}
+  <br><br>
 
+  <button id="btn_solve">Solve</button>
 
+  <hr>
+  <output id="txt"></output>
 
-function handleFileSelect(evt) {
-	evt.stopPropagation();
-	evt.preventDefault();
-
-	var files = evt.dataTransfer.files; // FileList object.
-
-	// files is a FileList of File objects. List some properties.
-    var texts=[]
-	var output = [];
-    remaining=files.length;
-    console.log(files.length);
-	for (var i = 0, f; f = files[i]; i++) {
-
-
-		output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-				  f.size, ' bytes, last modified: ',
-				  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-				  '</li>');
-        
-        var reader= new FileReader(); //GLOBAL File Reader
-        reader.onload = function (e) {
-            remaining-=1;
-            output = e.target.result;
-            texts.push(output);
-            console.log(texts);
-
-            //When finished opening all texts
-            if (remaining===0){
-                document.getElementById('txt').innerHTML = texts.join("<br><br><br><br>");
-                console.log(remaining,"displayed")
-            }
-        };//end onload()
-        reader.readAsText(f);
-	}
-	document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-	
-}
-
-function handleDragOver(evt) {
-	evt.stopPropagation();
-	evt.preventDefault();
-	evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-}
-
-// Setup the dnd listeners.
-var dropZone = document.getElementById('drop_zone');
-console.log(dropZone);
-dropZone.addEventListener('dragover', handleDragOver, false);
-dropZone.addEventListener('drop', handleFileSelect, false);
-</script>
+  <script src="script.js"></script>
+  
 </body>
-</html>
 
+</html>
