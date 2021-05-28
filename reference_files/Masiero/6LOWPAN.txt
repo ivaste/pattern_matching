@@ -1,0 +1,1368 @@
+INTERNATIONAL JOURNAL OF COMMUNICATION SYSTEMS
+Int. J. Commun. Syst. (2012)
+Published online in Wiley Online Library (wileyonlinelibrary.com). DOI: 10.1002/dac.2356
+
+6LoWPAN: a study on QoS security threats and countermeasures
+using intrusion detection system approach
+Anhtuan Le, Jonathan Loo* ,† , Aboubaker Lasebae, Mahdi Aiash and Yuan Luo
+School of Engineering and Information Sciences, Middlesex University, Hendon, NW4 4BT, UK
+
+SUMMARY
+Fuelled to bring the Internet of Things concept to real life, the Internet Engineering Task Force is working
+on 6LoWPAN, in which the standard allows a vast number of smart objects to be deployed in local wireless
+sensor networks (WSNs) using the huge address space of IPv6 for data and information harvesting through
+the Internet. From the security point of view, 6LoWPAN/WSN will be open to security threats from the local
+network itself and the Internet. Cryptography techniques applied as the front line of defence or deterrent can
+easily be broken because of the weak secure nature of LoWPAN devices and the wireless environment.
+Compromised nodes could lead to insider attacks without being detected by any cryptography checking.
+An intrusion detection system (IDS) is, primarily needed as a second line of defence to monitor the network operations and raise an alarm in case of any anomaly. This paper analyses potential security threats
+in 6LoWPAN and reviews the current countermeasures, in particular, the IDS-based solutions for countering insider/internal threats. Additionally, it discovers three novel QoS-related security threats, namely rank
+attack, local repair attack, and resource depleting attack, which are more seriously affecting the routing
+protocol for low-power and lossy network, the routing protocol used to establish 6LoWPAN network
+topology. A new two-layer IDS concept is introduced as a countermeasure method for securing the routing
+protocol for low-power and lossy network-built network topology from the internal QoS attacks. Potential
+research works are also presented to provide baseline reference to researchers in this field. Copyright © 2012
+John Wiley & Sons, Ltd.
+Received 31 July 2011; Revised 13 March 2012; Accepted 14 March 2012
+KEY WORDS:
+
+Internet of Things; 6LoWPAN; RPL; IDS; specification-based; anomaly; operation
+
+1. INTRODUCTION
+The Internet of Things (IoT) is developing rapidly and gaining momentum from both the academia
+and the industry. The IoT main concept is to use standard Internet protocols to interconnect a local
+network of smart objects world-wide for data and information harvesting with various functions
+such as identification, location, tracking, monitoring, etc. [1, 2]. With the development of technologies such as radio frequency identification (RFID), embedded sensors, miniature actuators, and
+nanotechnology [3], IoT now has a wide range of real-life applications, from transportation and
+logistics, health care, smart environment, to personal and social, gaming, robot, and city information
+[4]. With IoT, the information and communication technology (ICT) is expected to see a paradigm
+shift from the current style of communications, that is, human-to-human, to human-to-thing and
+thing-to-thing [3]. Smart objects can connect, exchange information and even make decisions
+on behalf of users. This will give rise to a new connectivity dimension called ‘connectivity for
+anything’, from what we already know, that is, connectivity for anyone at anytime and anyplace [5].
+
+*Correspondence to: Jonathan Loo, School of Engineering and Information Sciences, Middlesex University, Hendon,
+NW4 4BT, UK.
+† E-mail: j.loo@mdx.ac.uk
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+A. LE ET AL.
+
+The IoT environment consists of a huge number of devices with resource constraint characteristics such as short radio range, limited processing capability and short battery life. Therefore, the
+IoT implementation requires a communication protocol that can efficiently manage these conditions.
+6LoWPAN is a promising solution with the idea of adding an adaption layer called 6LoWPAN in the
+network protocol stack for integrating low-power network such as IEEE 802.15.4 into IPv6. This
+solution can allow the use of the existing infrastructure (Internet Protocol (IP) network) to maximise the utilization of available resources while benefiting from the huge address space of IPv6.
+Moreover, the implementation can be accelerated by using previous tools and mechanisms, such as
+IPv6 address auto-configuration, to save developers the time and the effort of creating and testing
+new mechanisms.
+Because of its open architecture [6], IoT security problems need to be considered carefully for the
+standard to be publically deployable. With regard to 6LoWPAN implementation, most of the IoT
+security threats, coming from 802.15.4, IP network and its adaptation layer, become more detailed
+and specific. The 802.15.4 part has a weaker secure link than the IP, while its resource-constrained
+devices are easy to be tampered with and has limited support for security services. Its threats, therefore, can come from both the external and internal attackers and target all the layers. Threats of the
+IP part, on the other hand, are mostly related to user authentication and data integrity. For example, unauthenticated users can access the information of the LoWPAN part, or falsify the data when
+sending from the sensor side to the users. Furthermore, the adaptation layer that connects these two
+parts is also vulnerable to several threats, such as fragmentation attacks, which can make the node
+run out of resource [7].
+Cryptographic techniques could be used as the first line of defence, but these can only protect
+6LoWPAN from external attackers. For instance, when the nodes are compromised and become
+internal attackers themselves, cryptographic techniques cannot detect these malicious nodes any
+more. These compromised nodes can launch different attacks such as causing the disruption of
+route discovery or data forwarding. Another example is that they can change packet contents from
+legitimate nodes to form severe routing attacks. Therefore, 6LoWPAN needs an intrusion detection
+system (IDS) to monitor any anomaly in the operation to raise an alarm early for preventing any
+further attacks.
+Attacks on 6LoWPAN operation are varied against each layer, but the most severe ones focus on
+the network layer, represented by its routing protocol for low-power and lossy network (RPL). All
+the current network layer threats from wireless sensor networks (WSN) can be applied into RPL,
+which work on the 6LoWPAN sensor side. Besides, because of its specific operation, RPL may be
+vulnerable to new threats, such as the rank attack, which will be discussed later in this paper. Using
+IDS solution for monitoring and analysing the operation of RPL to discover the appearance of any
+threat is therefore important to guarantee optimised 6LoWPAN performance.
+This paper provides the current state-of-the-art of security problems in 6LoWPAN with the concentration on the area of using IDSs for securing IoT performance from internal adversaries. Current
+security threats with some new potential attacks are both considered, while current main countermeasures and future directions, including our IDS approach, are presented and discussed to give
+background reference for researchers in this field.
+The structure of the paper is as follows: Section 2 gives a brief overview of 6LoWPAN and its
+underlying routing protocol RPL, Section 3 discusses the vulnerabilities of 6LoWPAN security,
+Section 4 reviews the main techniques in securing the network with the focus on IDS approach,
+Section 5 presents potential research works and our IDS approach for 6LoWPAN and Section 6
+concludes the paper.
+2. OVERVIEW OF 6LoWPAN
+The 6LoWPAN standard had only recently been introduced, but it already shows a promising future.
+The first two 6LoWPAN specifications, RFC 4919 and RFC 4944, were released in 2007. The former
+specifies 6LoWPAN requirements and goals while the latter presents its format and functionalities.
+The working group has been improving other mechanisms of the standard like header compression,
+neighbour discovery, use cases and routing requirements. The improvement of 6LoWPAN standard
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+has been emerging and attracted the interest of other research groups in this field so that the Zigbee
+Alliance, a research group specialising in the ad hoc and 802.15.4 network, announced that it would
+integrate IETF standards such as 6LoWPAN and RPL into its future specifications in 2009 [8].
+
+2.1. 6LoWPAN topology
+The 6LoWPAN network consists of one or more local LoWPANs, which are all connected by IPv6
+to the Internet through a gateway (or border router). The LoWPAN devices are characterised by
+short radio range, low data rate, low power and low cost. The network, therefore, deals with small
+packet size, low bandwidth and requires resource saving for maintaining the life of network nodes.
+LoWPAN supports both star and peer-to-peer topology; however, the topology can be changed
+frequently because of uncertain radio frequency, mobility and battery drain.
+Figure 1 shows the difference between the protocol stacks of 6LoWPAN and a typical IP network.
+In the typical model, IP is the only protocol used to connect different protocols from the data link
+and physical layer to multiple upper layer protocols. 6LoWPAN, however, utilises the 6LoWPAN
+stack, a combination of LoWPAN adaptation layer and IPv6, to connect its WSNs to the Internet.
+The biggest challenge of this combination is to adapt the differences between these two layer packet
+sizes, which are 1280 octets in IPv6 and 127 octets in LoWPAN. The adaptation layer implemented
+in the border router is responsible for this mission by fragmentising the packets at the IPv6 layer
+then reassembling them in 802.15.4 layer. The data link and physical layer of 6LoWPAN using protocols specified for sensor device while the transport layer does not commonly use Transmission
+Control Protocol because of performance, efficiency and complexity reasons [8].
+In 2008, another IETF working group, Routing over Low-power and Lossy Network (ROLL), was
+formed to establish a routing solution for such a network. This group proposed RPL (Routing protocol for Low-power and Lossy network), which was later considered the underlying routing protocol
+for 6LoWPAN. Improving the RPL operation is a critical mission for the network to manage a huge
+number of nodes with resource constraint characteristic.
+
+2.2. Routing protocol for low-power and lossy network framework
+2.2.1. Routing protocol for low-power and lossy network overview. The 6LoWPAN standard is
+essentially designed to operate in a network environment with large number of embedded sensor
+devices over low data-rate and lossy wireless link. Such criteria are specified in the routing requirements defined in RFC 5867 [9], 5826 [10], 5673 [11] and 5548 [12], with a core mandated list
+in which a candidate 6LoWPAN routing protocol must satisfy the following: (i) support different types of communication Unicast/anycast/multicast; (ii) adaptive routing with different network
+condition; (iii) constraint-based; (iv) support different traffic: multipoint-to-point (sensor nodes to
+sink manner), point-to-multipoint (sink broadcasts) and point-to-point traffic (sensor nodes communicate to each other); (v) scalability; (vi) configuration and management; (vii) node attribute;
+(viii) performance; and (iv) security [9–14].
+
+IoT Protocol Stacks with
+6LoWPAN
+
+IP Protocol Stacks
+HTTP
+TCP
+
+RTP
+UDP
+
+ICMP
+
+Application
+Transport
+
+Application protocols
+UDP
+
+ICMP
+
+IP
+
+Network
+
+IPv6
+LoWPAN
+
+Ethernet MAC
+
+Data Link
+
+IEEE 802.15.4 MAC
+
+Ethernet PHY
+
+Physical
+
+IEEE 802.15.4 PHY
+
+Figure 1. Comparison of 6LoWPAN and typical IP protocol stacks.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+The ROLL working group extensively evaluated existing routing protocols, such as Optimised
+Link State Routing Protocol, OLSR (Optimised Link State Routing Protocol), RIP (Routing
+Information Protocol), AODV (Ad hoc on demand Distance Vector Routing Protocol), DSDV
+(Destination-Sequenced Distance Vector), DYMO (Dynamic MANET On-demand), DSR (Dynamic
+Source Routing), etc. and concluded that none of them can satisfy those requirements. Therefore,
+ROLL proposed the RPL, which was specified according to all these requirements [15] and later
+was considered an underlying routing protocol for this kind of network.
+When looking at security problems of 6LoWPAN, routing is one of the weakest parts because the
+nodes are easy to be compromised while they are moving frequently in the networks, and contact
+with new, usually unauthenticated neighbours leads to many threads of routing attacks. Therefore,
+it is necessary to look at RPL operation for further protecting 6LoWPAN security.
+2.2.2. Routing protocol for low-power and lossy network architecture and operations. RPL components include WSN nodes, which act as hosts or intermediate routers for transmitting packets in
+WSN; local border router, which stays in the network edge and usually communicates through a
+common backbone such as a transit link [15], to translate packets through WSN to user hosts from
+the Internet. 6LoWPAN nodes connect with Directed Acyclic Graph (DAG) topology to prevent
+any network loop. This DAG is then separated into multiple Destination Oriented DAG (DODAG),
+where the roots of these DODAG are normally local border router, which connect together and to
+the Internet through the backbone. The DODAG is considered a logical configuration on physical
+nodes, so a node can join multiple DODAGs to support routing optimisation [13]. Figure 2 shows
+in detail this general architecture.
+Nodes in DODAG select and optimise the path using some node/link metrics and constraints,
+called DODAG instances such as node state, node energy, hop count, throughput, latency, link reliability, and link colour attribute [13]. The node uses the objective functions to point out particular
+metrics chosen for optimising route, represented by Objective Code Point (OCP). On the basis of
+objective functions and path cost toward the root, the Rank (or depth) of nodes is calculated to
+differentiate their relationship [15]. For example, nodes with the same rank can be sibling nodes,
+while consecutive rank nodes can be parents and child. Messages transmitting in RPL need to follow
+the Rank rule, which means they can only go either upstream with node ranks strictly decreasing,
+or downstream with node ranks strictly increasing along the path. This rule helps to prevent loops
+created on the network.
+At the building phase, the DODAG root starts broadcasting its DODAG Information Objective
+(DIO) message, which contains information about its rank, OCP and DAG-ID. All root neighbours
+have a direct path toward the root, so they set their rank to 1, add root address as their parent, update
+
+Internet
+
+Local
+server
+
+Border Router
+
+LBR
+
+Downstream
+
+R
+R
+R
+H
+
+R
+
+R
+H
+
+H
+
+H
+
+R
+
+Router
+
+Upstream
+
+LBR
+
+H Host
+
+Figure 2. 6LoWPAN architecture.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+and continue broadcasting their own DIO. Once nodes in the network receive DIO, they form a
+set of parent nodes and select a preferred parent, which will be their default next hop towards the
+root. They then calculate their own rank based on the rank of their parent and cost path, and form
+their own DIO, which includes rank, OCP and DODAG-ID, to broadcast again. By this broadcasting
+mechanism, the DIO is propagated throughout the network. Every node then knows the path to the
+root, and the DODAG topology is created.
+When a node joins the network it can either wait for a DIO or send a DODAG Information
+Solicitation message (DIS) to ask others to send DIO if the waiting time is long. Once this node
+receives a DIO, it chooses its preferred parent and builds a Destination Advertisement Object (DAO)
+message, which contains its address and prefix parent. This DAO is advertised for other nodes to
+update their rooting table or optimise their parents if possible.
+On operation, if a link is broken somewhere, RPL provides two mechanisms to fix it. The first
+one, Global Repair, starts by DODAG root sending a new DAG sequence number to recalculate the
+whole topology. Once nodes receive new DIO messages, they can start parent selection and update
+the link cost again. If a local node suffers from a broken link and it does not want to wait a long time
+for Global Repair, it can use the Local Repair mechanism. This node first sends the poison message
+to all its children informing that they need to update their parent. It then sends a DIS message to get
+the new topology information like the first time it joins the network.
+The 6LoWPAN security must be well protected for making the standard reliable and maintaining
+optimised performance. It is necessary to examine the security threats towards its operations to find
+out the most suitable defence system.
+3. VULNERABILITIES IN 6LoWPAN SECURITY
+6LoWPAN is the combination of the two networks IPv6 and WSN, so security threats from both
+needs to be examined. There are also threats that aim at the adaptation layer to attack the packet
+translation process. The operation of 6LoWPAN is represented by the performance of RPL; it is
+also necessary to analyse the threats towards this protocol.
+3.1. Security threats from wireless sensor network side
+The security threats of WSN have been extensively studied by the research community. The attacks
+can be classified by several schemes: outsider–insider adverse source, passive–active, compromising
+methods, host-based or network-based [16].
+From the protecting threat’s point of view, detecting the attacks from the outsider and insider
+requires different protecting systems. The attackers outside of the network can initiate a passive
+attack such as unauthorised listening or active attack like denial-of-service (DoS), for example,
+jamming or power exhaustion. The defence system normally uses cryptography mechanisms to prevent or eliminate outsiders from joining the network. These techniques, however, are not effective
+when protecting against insider threats. Insider malicious nodes can be created by several ways:
+attackers physically capture the nodes and reprogram them, attackers use software and devices to
+breach the cryptography key or inject malicious code [17]. On those cases, the attackers have all the
+keys, so they can easily overcome any cryptography test. The insider attacks usually aim at destroying a network operation so it is better to detect them by a well specified monitor system, which can
+discover early any anomaly network behaviour.
+The outsider and insider attacks are applied on all layers of WSN. A summary of those attacks
+is given in Figure 3 [16–18]. Some of these threats are more dangerous because they can easily
+be deployed and can generate complicated attacks. If the system cannot identify them early, their
+effects on network operation may be very serious both in short-term and long-term. One example
+is the Sybil attack, which uses the packet forging mechanism and leads to multiple other attacks
+like misdirection, exhaustion and unfairness [16]. It will make the WSN unavailable, partitioned or
+resource exhausted. Another dangerous attack is the Sinkhole, which uses a packet dropping mechanism to attract traffic to a specific node. It generates selective forwarding, black hole attack and
+combines to partition the network [16].
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+Figure 3. Security threats from WSN side.
+
+Besides that, when applying some IPv6 mechanisms like neighbour discovery and address autoconfiguration in WSN, there are neighbour discovery threats as detailed in RFC 3756 [19]. If the
+attackers crack into these mechanisms to spoof the neighbour solicitation/advertisement or the
+redirect messages, they can degrade the routing performance by falsifying the topology view of
+the members.
+As can be seen, most of the WSN threats focus on the network layer and aims at degrading the
+network operation. Therefore, it is necessary to specify and deploy an IDS for monitoring the network performance to detect any abnormal behaviours and from that, the system can apply further
+mechanisms to eliminate the adverse.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+3.2. Security threats from the internet side
+End-users from the Internet can access information from the sensor field once 6LoWPAN is implemented. This raises the threats of authenticating from users and sensor motes, sensor network
+availability and user accountability. The adversary can access the information illegally if no authentication mechanism is applied in the network. When a communication channel between end-user
+and sensor network is established, the attacker can also eavesdrop on the sensitive information from
+the data stream, which breaks the network integrity. Besides that, the accountability of the users
+accessing the sensor network should be considered for detecting and recreating security incidents
+[20]. The availability of the communication should be guaranteed by protecting the sensor side and
+adapting the operation of the Internet side with the resource constraint of the 802.15.4 nature.
+Another type of threat is that an attacker from the Internet can get control of the sensor nodes. For
+example, the botnet attack [21] creates a botnet inside the sensor network for forging the data collection sending to the sink. This attack falsifies the data in the user-end, which leads to wrong alarm
+or decision. The sensor botnet does not have enough resources for making a successful distributed
+DoS attack to other networks; however, attackers can make a distributed DoS attack to the botnet
+itself by flooding to drain the power source.
+A cryptography line cannot defend against DoS attack from the Internet to the sensor network, so
+there is a need for implementing the IDS for analysing the IP traffic between the two. Besides that,
+traditional IDS solutions in the Internet or in the sensor network cannot be simply applied because
+of the dissimilarity of traffic pattern in these two network designs.
+3.3. Security threats from the adaptation layer
+The adaptation layer is implemented at the border router for translating the packet between the two
+networks. The border router is normally a wired node and has strong security protection. However,
+the packet fragmentation and reassembly progress still have some vulnerability.
+Kim [7] proposed that fragmentation attack techniques from the IP network can be applied in
+this layer by modifying or reconstructing the packet fragmentation fields like datagram size, datagram tag or datagram offset. Examples of the threats are Tiny Fragmentation, Ping of Death, Jolt,
+Teardrop, bank, New Teardrop, or Frag router attack [7]. These attacks can cause critical damage
+to a sensor node, for instance, reassemble buffer overflow because of packet resequence, exhausting
+resource because of processing unnecessary fragmentation, or shutting down and rebooting.
+3.4. Security threats from the routing protocol for low-power and lossy network
+The RPL is an underlying and specific routing protocol designed for the purpose of optimising
+6LoWPAN operation. There are security mechanisms proposed for RPL but they only aim at protecting it from external threats by control messages encrypting countermeasures. The drawbacks of
+6LoWPAN security, such as weak communication link and nontampering nodes, make RPL weak
+from internal attack. Once a benign node becomes an internal adversary, it can break the network
+operation without being detected by cryptography mechanisms. Therefore, analysing RPL threats in
+addition to specifying its operation will help to monitor most of the internal malicious behaviours.
+Current RPL threats directly attack the routing operation by changing the route, making it longer
+or even changing the destination address so that the time waiting for a packet goes to indefinite.
+Threats on other layers that aim at resource consuming such as flooding and overwhelming, or
+destroying network traffic like jamming or congestion can also be considered indirect attacks to the
+routing part because they downgrade the node operation. RPL is also vulnerable from passive eavesdropping attacks and active tampering [15]. The passive eavesdropping attacks can be prevented by
+using a symmetric key to encrypt the packets as proposed in [15]. Tampering active nodes, however,
+creates compromised nodes, which can cooperate to break the protocol operation rules and easily
+overcome the cryptography line.
+Besides that, RPL utilizes some specific rules for optimising network operation; nevertheless,
+adversaries can exploit these to create different attacks. Potential attacks of this kind are Rank, local
+repair and resource depletion attack.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+3.4.1. Rank attacks. One kind of cooperated threat is the Rank attack. The RPL routing rule states
+that ‘rank strictly increases in the downstream direction and strictly decreases in the upstream
+direction’ [15]. This rule is created to prevent the nodes from creating unoptimised path or loop path.
+Consider a scenario when the source node 1 sends the packet to the destination node N through intermediate nodes 2, 3, 4, : : :, N  1. Assume the rank of these N nodes are R1 , R2 , R3 , : : :, Rn1 , Rn
+consequently. The rank rule states that if node 1 sends packets upward to node N then the condition R1 > R2 > R3 > : : :Rn1 > Rn must be satisfied; or if the route is downward then
+R1 6 R2 6 R3 6 : : :Rn1 6 Rn must be satisfied. The senders and receivers along the route
+have the responsibility to check these conditions and inform any breaking of this rule by setting the
+Rank-Error bit in the RPL Packet Information [15].
+The RPL creates node rank as its unique parameter for easily choosing and maintaining the optimised path. The RPL requires all the nodes to check and follow this rule; however, its mechanism
+cannot protect against attacks from cooperated malicious node behaviours. The rank attack is easy to
+be implemented by simply skipping the rank checking function in the compromised nodes, or even
+injecting some code that breaks this function in the normal nodes. It is also difficult to be revealed
+because it does not need to spoof anything and most of the behaviours of the compromised nodes
+look like normal from their neighbours’ point of view. Once the rank rule is broken, the consequence
+can be (i) unoptimised path is created; (ii) if the attack is initiated in the route discovery phase, some
+optimised paths may be disrupted, which mean they exist but will never be discovered; and (iii) a
+loop can be created without any detection. These consequences definitely downgrade the network
+operation in many important aspects, such as throughput and delay.
+Figure 4 shows how the Rank attack creates an unoptimised path or a loop. In Figure 4(a), the
+two nodes 2 and 5 are compromised by the Rank attack and misdirect the packets from source 1 to
+destination 4 to the route 1–2–5–6–4 instead of the optimal route 1–2–3–4. The Rank rule is broken
+at the link 2–5, for example, by not setting the Rank-Error bit up. This scenario breaks the optimal
+topology and creates more delay to the route. In Figure 4(b), the four nodes 4, 5, 6, 7 are compromised by the Rank attack to direct the packets into the loop 1–2–3–4–5–6–7. The Rank attack in this
+scenario is more dangerous because it creates more delay, packet dropping and adds more workload
+to the nodes along the route. In both scenarios, the Rank rule is only broken at the link between the
+malicious nodes so it is difficult for other normal nodes to detect these anomaly behaviours.
+3.4.2. Local repair attack. A node in RPL can start the local repair progress in two ways. The first
+way is the poisoning mechanism by changing its rank to infinitive and broadcast this rank to all
+of its neighbours. Those neighbours once receiving and updating the rank information of that node
+
+Destination
+4
+
+e
+ut
+
+O
+
+im
+pt
+
+i se
+
+Destination D
+
+ro
+d 3
+
+4
+
+R4 = 6
+
+R5 = 7
+
+te
+ro
+u
+ed
+is
+tim
+nop
+
+1
+source
+a. Un-optimised route
+
+3
+
+6
+2
+1
+
+R3 = 7
+
+R2 = 8
+
+R1 = 9
+
+U
+
+5
+
+5
+
+R6 = 8
+
+Upstream
+
+2
+
+Downstream
+
+6
+
+R7 = 9
+
+7
+b. Loop creation
+
+Figure 4. Unoptimised route and loop creation in rank attack scenario.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+may need to find a new parent towards the root. The second way to do local repair is to change the
+DODAG ID value of the node. This metric is unique to each DODAG and shows what LoWPAN the
+node belongs to. A node changes its DODAG ID meaning that it left that DODAG and now belongs
+to a new DODAG neighbour. As a result, all of its child nodes need to do a local repair to find a new
+preferred parent.
+In RPL, the node is supposed to only do local repair if the links towards its parent list are all
+broken. However, the adversary can make the node change its DODAG ID or broadcast infinitive
+rank frequently without any reason. Only the node itself can verify if the link to its preferred parent
+is broken or not, so when the other neighbours look at a frequent local repair made by a node, they
+cannot justify whether that node is benign or not.
+Every time a local repair happens, the network topology will need to be updated. This will cost
+resources and degrade network operation. In case of changing DODAG ID, it is even worse because
+moving in and moving out a LoWPAN can create local repair in at least two DODAG.
+3.4.3. Resource depleting attack. Nodes in RPL are resource constrained so if they have to do
+too many missions, they will become exhausted. However, there is no mechanism in RPL to limit
+the actions that a node should do. The adversary, therefore, can reprogram a node so that it starts
+resource costing activities such as broadcasting, sending control messages much more than needed.
+This behaviour can also affect the operations of other neighbours. Once the activities are large
+enough, the node becomes exhausted and network operations will be downgraded.
+To summarise, there are many threats at all parts of 6LoWPAN, especially focusing on the network layer of the sensor side, represented by the RPL protocol. Network constraint and resource
+limitation for security requires an efficient security solution in protecting the most important part of
+the network. The next part highlights some of the most promising techniques in securing 6LoWPAN.
+4. 6LoWPAN SECURITY COUNTERMEASURES
+To be publicly accepted, 6LoWPAN needs to have a strong security defence system. However, security techniques from other networks cannot be straightly applied in 6LoWPAN because of many
+of its specific constraints. WSN is the network that has the nearest nature to 6LoWPAN therefore,
+WSN security mechanisms are preferred to be utilized in that network. This section summarises
+security requirements and examines the most prominent techniques that might be helpful in applying
+for 6LoWPAN.
+4.1. 6LoWPAN security requirements
+The RFC4919 [22] specifies a list of security requirements for 6LoWPAN, which mainly aim at
+protecting the communications from the end-users to the sensor network. The requirement list is:
+Confidentiality: only authorised users can access the information
+Authentication: data is only originated from a trusted sources
+Integrity: the received data remains unchanged during transmission
+Freshness: consider for both data and key to ensure no replayed of old messages
+Availability: guarantee the data can be accessible when needed
+Robustness: providing operation despite the abnormal conditions
+Resiliency: provide an acceptable level of security even in the case some nodes are compromised
+ Energy efficiency: reduce the control overhead to maximise network lifetime
+ Assurance: the ability to disseminate different information
+
+
+
+
+
+
+
+
+These requirements require the combination of different securing systems. Cryptography is considered the first line for solving the confidentiality, authentication and integrity. This system, however, cannot solve other QoS securing requirements like availability, robustness and resiliency. It
+therefore needs to cooperate with the IDS, which can monitor and detect malicious sources from the
+early phase to eliminate further damage of the attacks.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+4.2. Cryptography techniques
+By encrypting messages before transmitting, the cryptography solutions aim at threefold protection: authentication — only the authenticated user, who has the right key, can decrypt and read the
+messages; integrity — message content should not be changed during transmission; and confidentiality — no one can understand the message without the key.
+The encryption methods for 6LoWPAN should be developed more to adapt to the prevailing
+constraints in 6LoWPAN devices such as low power and low computing ability. This is because
+unoptimised cryptography mechanisms will consume more resources and therefore, shorten network
+life time. The key used in encryption methods should also not be too short; otherwise it will be easy
+to be broken by the attackers. Because 6LoWPAN is the combination of WSN and the Internet,
+it is natural to apply these two network cryptography mechanisms for securing this network. WSN
+uses AES (Advanced Encryption Standard) for securing the link layer with several operation modes,
+most of which does not ensure integrity function [22]. To protect network layer end-to-end security,
+IPsec (Internet Protocol Security) is utilised with transport and tunnel modes. Before, the public key
+cryptography mechanism was thought to be too heavy for applying in WSN. However, recent
+research developments [23, 24] showed ways to combine RSA (Rivest - Shamir - Adelman
+asymmetric encryption) and ECC (Elliptic Curve Cryptography) techniques with several modes
+to adjust to network scenarios.
+Exchanging key is another problem that should be considered. The Internet Key Exchange from
+IPsec (Internet Protocol Security) is suggested for exchanging the key in the network. However,
+the Internet Key Exchange is not considered as a feasible solution because of its heavy signalling
+messages, which is unsuitable for the small packet size of 802.15.4 nature and the energy efficiency
+requirement. The WSN used several key distribution methods like predistribute and key pool; however, they lack scalable ability. It is also necessary to analyse the threat towards the key at the
+bootstrap time when an adversary sits among other nodes without being required to be authenticated.
+Although research shows significant improvements in using cryptography for 6LoWPAN, the
+network still has to overcome many problems. Cryptography is also only helpful while protecting 6LoWPAN from the external attacks, but lack the ability in detecting and eliminating internal
+attacks. This is because cryptography cannot detect attackers with legal keys but behave maliciously.
+Network security, which utilise only cryptography, is therefore weak under attacks aimed at network
+performance such as DoS or battery, and resource attacks like jamming and exhaust attack.
+Cryptography alone, therefore, cannot provide total security for 6LoWPAN. There is a need for
+implementing IDS to monitor any malicious behaviour of the network to prevent early security
+attacks to decrease its effects. IDS is an efficient way for discovering any attacker that bypasses the
+cryptography defence line, and ensuring a normal operation of the network.
+The combination of cryptography as the first line and IDS as the second line defence can secure
+the network from most of the threats. The missions of the IDS are to monitor and raise an alarm
+about any possible threats and pass it to the cryptography to restart the keying process for eliminating the attackers. IDS can deal with all the threats mentioned in Section 3.1, some threats
+in Section 3.2, which send control packets for draining the power resource in WSN; all threats
+presented in Section 3.3 and especially protect the RPL from its threats in Section 3.4.
+
+4.3. Intrusion detection system techniques
+4.3.1. Overview of intrusion detection system. The intrusion detection system is a well-known network security approach that has attracted research interest since the 1970s [25]. The main idea
+behind IDS is to collect the network data and analyse any sign of the attack to raise an alarm and
+discover the adverse resource.
+The development of technology has changed the communication environment from wired, wireless, ad hoc to sensor network recently. IDS solutions have also changed from data collection and
+analysis techniques to adaptation to the implemented environment. The nature of WSN is different from other networks in terms of device communication ability and resource available. IDS
+applied in WSN should optimise the features and computational work for saving network resource.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+With regard to 6LoWPAN, the optimisation ability of the IDS is even more required because of the
+network scalability.
+The IDS approaches are often divided by misuse, anomaly-based and specification-based type.
+A misuse IDS first defines patterns of the known attacks, and when monitoring the network, if it
+discovers any data that match the pattern, it will raise a security alarm. This method can provide
+low-false alarm rate, but it needs to store a lot of data to be analysed, requires the attacks to be welldefined and limits in detecting the new attacks. This approach is not favoured in WSN or 6LoWPAN
+because the knowledge about attacks is not well-studied, security resource is constrained, and the
+network requires the ability to detect novel attacks.
+Another method, anomaly-based IDS, focuses on classifying the normal network behaviours,
+then monitors and compares to detect any anomalous activities. The method computes the deviation
+between the monitored data and the pattern, and if the deviation exceeds a threshold, it will raise an
+alarm. Anomaly-based IDS has the ability to detect new attacks if these attacks make any change to
+network operations. It also does not consume many resources. However, the false-alarm rate is still
+high because the system cannot differentiate between misbehaviour and malicious operation.
+Specification-based IDS specifies the normal operations of the network in detail and monitors any
+breaking of this description. The operation patterns are usually created by specialists, so the false
+detection rate is decreased a lot compared to the anomaly method. Specification-based IDS also has
+the ability to detect new attacks, if these attacks make the network operations different from the
+patterns. The disadvantages of this method are that it needs the definition from specialist and it is
+inflexible in upgrading.
+The current trend in IDS research is to combine these methods for having more accuracy and
+more functions.
+4.3.2. Application of intrusion detections system in 6LoWPAN. 6LoWPAN is still a new and
+on-going research area. At this time, there are only a few security solutions proposed for the standard. Cryptography solutions focus on choosing a fast, light-weight and secured encryption, and an
+effective key management method. Even when 6LoWPAN has an ideal cryptography line defence,
+there is still a need for implementing an IDS for dealing with network performance threats such
+as DoS and other resource attacks. The IDS will discover and stop most of the attacks that break
+cryptography protection to make changes on the network operation. However, no IDS solution has
+been proposed for 6LoWPAN security. This part takes the natural characteristics of 6LoWPAN to
+analyse the difference to other networks to clarify a 6LoWPAN IDS.
+6LoWPAN combines 802.15.4 and IPv6 so its IDS needs to monitor traffic arriving from both
+sides. The traffic patterns between the two networks are different, so no single traditional solution
+from IPv6 or WSN can be applied straight away. The IDS solution should have two modules, one
+to keep track of the sensor network and the other to check the traffic patterns from the IP network.
+These two units should cooperate for better performance and resource saving.
+4.3.2.1. Intrusion detection system issues in wireless sensor network part. Intrusion detection
+system solutions in WSN have to be light weight and low work load because of the resources constraint of the nodes. Their main issues are (i) the feature extraction: the issue in choosing the right
+features for reducing the monitored data and effectively detect the attacks; (ii) the placement problems: where to put the IDS agent in the network for an optimised operation; and (iii) the data analysis
+techniques: choosing a technique to increase accuracy and decrease the computational work.
+To detect WSN attacks, a number of data features were proposed. Da Silva et al. [26] suggested to
+monitor: (i) the time between two consecutive messages for detecting the negligence (sending message too slowly) or exhaustion (sending message too quickly); (ii) payload: for discovering integrity
+attacks, which makes changes on payload; (iii) delay: detect attacks that make high delay in sending the messages such as black hole or selective forwarding; (iv) repetition: detect DoS attack;
+(v) senderID: for detecting wormhole, Helloflood attack — this parameter can also be applied in
+discovering Neighbour Discovery attacks of IPv6 and Sybil, which create a strange SenderID; and
+(vi) number of collisions: detect attacks that cause large number of collisions such as jamming
+attacks. Strikos [27] added the following parameters: (i) number of lost packets: higher of packet lost
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+Figure 5. Hierarchical approach in putting IDS agents on WSN.
+
+rate can be a sign of dropping, modifying or jamming attacks; (ii) number of modified packets: this
+shows the threats of integrity attacks; and (iii) the amount of energy used by the network: this is for
+preventing the network partition by controlling the energy consumption distributed in the network.
+Each parameter only shows its effectivity in protecting the network from one or some threats
+but not all. The IDS in WSN, however, cannot implement to monitor all the parameters for all the
+threats because it is limited in resources. Therefore, the defence system needs to prioritise the threats
+depending on the scenario, and choose only the most important attacks that need to be protected.
+The parameters then will be chosen and cooperate to monitor all these priority attacks.
+Analysing threats for choosing parameters to monitor is extremely necessary in 6LoWPAN
+because different LoWPAN networks connected to the IPv6 will have variant characteristics and
+be deployed in distinguishable environments so it will have distinct priority security objectives.
+Where to put the IDS agents in WSN is also an issue that needs to be considered. The networkbased approach, which puts the agent on the base station to receive and analyse all the monitored
+data from the nodes, can utilise the strong resource ability of the base station. Another good thing
+is that it can use the global view to detect cooperation attacks. On the other hand, this architecture
+creates a lot of communication overhead and is bad at detecting local attacks.
+In the host-based approach, IDS agents are implemented in every node. Nodes monitor, analyse
+the monitoring data and decide themselves. This method can reduce the monitored traffic but put
+more computational work to consume node resources and shorten its lifetime. The approach can
+detect local attacks accurately, but it lacks global view for protecting cooperation attacks.
+There is a better solution, the hierarchical approach [28, 29], to combine these two placements by
+clustering the network. IDS agents are placed on three levels as can be seen in Figure 5. The first
+level is the cluster members, which are used to monitor their neighbour’s behaviours and collect
+audit data. These nodes can analyse their own collected data to identify malicious neighbours to
+isolate them. The second level is the clusterheads, which are used as coordinators to aggregate audit
+data from their cluster nodes, analyse and make decisions to identify the intrusions. The highest
+level is the base station, which collect monitoring data from its clusterheads and detects attacks
+towards multiple clusters.
+The main advantages of this architecture are the ability to detect distributed attacks and provide scalability. The audit data that are collected from different network views also makes this
+architecture robust and fault tolerant [28].
+The clustering architecture in WSN is similar to the 6LoWPAN graph topology (DODAG) where
+the border router sits next to the Internet side and plays the role of the base station. The border router
+is usually a wired computer connected to the Internet so it can be considered resource unlimited.
+The DODAG roots will play the role of the clusterheads for controlling the operation of the sensor
+nodes. The algorithms for monitoring attacks in each DODAG will be slightly different because
+each DODAG uses a distinct objective function and follows varied routing rule. This is not like in
+the clustering topology of WSN where all the clusterheads implement the same algorithm. Nevertheless, it does not affect the cooperation between the DODAG roots, because the border router still
+has a global view.
+Another issue in implementing IDS in WSN is choosing a technique for detecting the attacks.
+The two main directions are anomaly and specification based. Anomaly direction uses a variety of
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+techniques from statistics, artificial intelligence and fuzzy logic to agent based to detect abnormal
+behaviour in the network. It calculates the deviation between the monitored data and a standard
+pattern, which presents the normal network operations. Because the monitoring system is easy to
+get confused between a failure node and a malicious node, it suffers from the high false alarm rate
+problems. The specification-based approach defines the normal operation of the nodes so it can
+overcome this problem and has higher accuracy detection rate. The approach, however, requires
+specialists involved to make a specification of the protocol behaviour.
+Intrusion detection system in 6LoWPAN needs a technique that can analyse the data quickly,
+accurately, and with a low calculation workload. Moreover, the system needs to have the ability in
+detecting novel attacks because the network environment is usually in weak security condition with
+many new threats. The analysis system should be learned and improved. For example, it must have
+the ability to generate new rules based on its monitoring.
+Because 6LoWPAN uses RPL as its underlying routing protocol, a specification of this will help
+the IDS work faster and more accurately. The data collected from monitoring network transition can
+be also used to generate normal operation patterns by statistical techniques. Therefore, the combination of anomaly and specification-based is promising for IDS in 6LoWPAN. This direction will
+be further analysed in the later part of this paper.
+4.3.2.2. Intrusion detection system issues in IPv6 part. The IDS from IPv6 side is to protect the
+border router from any threats that send packets from IPv6 to WSN to start a WSN attack. Most
+of the issues in WSN parts are easy to solve in the IPv6 part because the border router is usually
+implemented with strong security and nonresource constraint and moreover, the threats that come
+from the IPv6 network are much less than threats inside the sensor network. For instance, the border
+router is the most suitable position to put the IDS agent because it is the place where the traffic
+between the two networks goes. The feature extraction issue is also not restricted like in the WSN
+part because of the high capacity of the border router. The only issue that needs to be focused on is
+choosing suitable IDS techniques for detecting threats early and accurately.
+Again three types of methods: misuse, anomaly and specification-based can be applied. The
+misuse direction is still not favourable because no attack signatures are defined. Amin et al. [30]
+mentioned an IDS that can be considered as the combination of anomaly and misuse techniques.
+It uses the three techniques: Anderson-Darling Algorithm, Entropy Algorithm and PAT (Predefined
+Attack Types) calculator for detecting the abnormal behaviours. The chosen data feature is the discard packets from the congestion avoidance algorithms when the queues are full. To reduce the false
+alarm rate, they bring the discovered anomaly data to a pattern classifier, which checks the predefined attack type on the stored buffer. A threshold is also chosen for generating a security alert once
+it is detected to be passed by the classifier. This system requires a lot of computational loads with
+the three checking modules and another matching part so it will reduce the detection speed. The
+author did not explain why they chose to analyse only the data, which is discarded from the buffer.
+By doing that they probably assumed the data that passed to the buffer are attack-free while there
+is no guarantee in reality. The main architecture of this system, however, can still be applied with
+different detecting techniques for a better solution.
+4.3.2.3. Cooperation issues. Both the two IDSs defend against the threats towards the sensor network with separate missions. IDS in the IPv6 side prevents the attacks initiated by sending control
+packets from IPv6 to the sensor network, while the IDS in the sensor part prevents attacks inside
+the network itself. However, these two IDSs can cooperate to make the system more secured. For
+instance, in case an attack breaks the IPv6 IDS and raises a DoS attack in the sensor side, and if
+the sensor IDS can detect this attack and reveal the outside resource, it can report to the IPv6 IDS.
+This will help the IPv6 IDS to deny all malicious traffic from the attack source. On the other hand,
+the users from the Internet side can report their suspicions about misbehaviour nodes, for example, nodes that report data that have nonhuman sense, to the IDS sensor to investigate more about
+what happens.
+The border router can be designed to work like a proxy to receive reports from both sides and
+requires the other side to do further checking. This will improve the accuracy rate of detecting the
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+attacks. From the security system point of view, IDS in 6LoWPAN should have two parts working together to defend against threats from the two sides. The main issue of implementing IDS in
+6LoWPAN is choosing the monitoring data and analysing techniques for detecting the attacks early
+and accurately. The next part reviews prominent IDS methods and examines their effectivity when
+applied in 6LoWPAN context.
+4.3.3. Intrusion detection system practical techniques. Choosing a technique for analysing the
+data is important for a better accuracy, saving resource and enhancing the functions that the
+system can do. The techniques are usually divided into two categories: anomaly-based and
+specification-based methods.
+4.3.3.1. Anomaly-based intrusion detection system. Anomaly IDS can adapt to different network
+environments, attacks and coordinated attacks. Because of the difficulty in differentiating between
+misbehaviour and malicious nodes, it usually has high false alarm rate. Other disadvantages include
+the time consumption for analysing a large amount of data and the possibility that an adversary can
+retrain the system to accept attack behaviours.
+Anomaly IDS has been developing for a long time. Some of the most popular techniques are
+artificial intelligence, statistical approach, data mining, software engineering and agent-based IDS.
+4.3.3.2. Artificial intelligence. Artificial intelligence techniques have been applied widely in wired
+IDS for a long time and now the solutions are moving to the WSN. The main advantage of this
+method is the ability to extract valued information about malicious attacks from the data with high
+accuracy. It nevertheless consumes a large amount of resource on training and testing data. The main
+application techniques are (i) semantic-based, (ii) fuzzy logic, (iii) game theory and (iv) bio-inspired.
+In the semantic-based direction, the solutions focus on extracting the features of WSN and constructing security ontology to build formal semantics for the network. The semantics are then used
+as checking patterns for the IDS. Examples in this direction are the work of Mao [31] and Chen et al.
+[32]. The former author defined four layers of the network, which are network, semantic, model and
+cooperative layer, and presented the relation between these layers as a suggestion for the IDS checking module. The latter author transferred WSN nodes into the ontology concept and calculated the
+relationship of the whole network to define a relationship threshold. This threshold is a reference for
+the node to monitor and discover any of its anomaly neighbours. This approach is, however, difficult
+to build in a diversity 6LoWPAN environment, where the system has a wide range of node types
+and relationships.
+Choosing a threshold value is an important issue in IDS. If the threshold is too low, the security
+will be weak. On the other hand, if it is too high, the solution will be energy consumption and the
+life time of the network will be decreased. For these reasons, the fuzzy logic approach is used for
+setting a dynamic IDS threshold.
+Lee et al. [33] used the number of cluster nodes, the value of the key dissemination limit, and the
+distance from the base station to each cluster to calculate the threshold and broadcast it periodically
+by the base station. This method adapts the topology changes because of the moving of the nodes
+so it can drop false reports. However, it requires the base station to store and calculate the distance
+toward cluster nodes and energy consumption so it still consumes much resources.
+Chi and Cho [34] used four factors: the node energy level, neighbour nodes list, message transmission rate and error rate in the transmission to calculate the dynamic threshold for detecting DoS
+attacks. The integrated fuzzy threshold is easy to be calculated. However, the threshold for each
+parameter is chosen by experiment, so there is no guarantee that the solution will work in a different
+network environment.
+Parekh and Cam [35] used a directed acyclic graph and probability table to represent the dynamic
+site condition to calculate the threshold value for minimizing the false alarm rate. The sensors are
+selectively chosen to assign weights to their sensed reading so that they can improve the quality of
+detection. The disadvantage of this method is that it requires knowing the network topology and the
+roles of sensor nodes, which decrease the scalability when implementing in 6LoWPAN.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+The fuzzy approach provides an adaptation method to deal with the environment changes and
+improves the accuracy of the network, but it needs a strong theoretical model for dealing with
+different network environments in 6LoWPAN.
+The game theory solutions aim at modelling the network security as a game between players
+with contradicting objectives. The game type can be either noncooperative or cooperative, zero-sum
+or non-zero-sum. The objective is to discover the optimised strategies for the players, called the
+Nash Equilibrium.
+Dong et al. [36] defined a simple payoff matrix with probability measures for the IDS to protect important nodes in the network effectively from DoS attacks. Estiri and Khademzadeh [37]
+proposed a repeated game model for detecting the dropping packet attacks, which reward the node
+reputation every time it forwards and cooperates and punishing every time it does not. After a number of repeated times, the average number of packets dropped is shown to get to a stable degree
+and the malicious nodes are either to stop the attack or to be exploited. Estiri and Khademzadeh
+[38] also proposed a Bayesian game with incomplete information to present the interaction between
+malicious and normal nodes in terms of signalling.
+The gaming approach is a strong tool and promising for improving the detection accuracy. However, there are some issues that need to be overcome, such as the rational assumption of the players,
+which is not usually true in reality, the complexity of modelling the real network, and the large
+calculation work load, which consumes WSN resources.
+The Bio-inspired approaches migrate from the animal behaviours and model these for optimising the security solutions. Banerjee et al. [39] combines the Emotional Ants and the conventional
+machine learning for keeping track of the intruder trials. The IDS agent works as the ant agent
+and later is transformed to be the emotional ant agent for making decisions. The main advantages of this solution are the ability to perceive behavioural patterns, deliberate and act based on
+a self-organisational principle combined with probability values.
+Soroush et al. [40] also used a boosting ant colony based data mining for extracting a classification rule set from a network dataset. The pheromone and entropy function are used to direct each
+tour of the ants and continues iteratively to extract a final set of rules, which were later used as
+detection patterns in the larger dataset. This method is an effective way to mine the data; however,
+it consumes time and resource to reach the result.
+4.3.3.3. Statistical-based intrusion detection system. The statistical methods use several mathematical models for analysing the dataset to identify a threshold pattern to detect the anomaly behaviours.
+Some of the main techniques are (i) mathematical model, (ii) Bayesian network and (iii) hidden
+Markov chain.
+The mathematical approaches use some statistical models such as linear or nonlinear.
+Phuong et al. [41] used the cumulative sum to detect changes based on the cumulative effect of
+the changes made in the random sequence instead of checking every variable threshold. The model
+is easy to compute, strong, light-weight and not resource consuming. However, the model accuracy
+rate is not high because of the lack of cooperation between the monitored nodes.
+Ponomarchuk and Seo [42] analysed the number of received packets in a time window of a
+given length and interarrival time of packets for detecting anomaly behaviours. The packet reception
+rate was calculated based on the binomial distribution while the interarrival time was based on the
+exponential distribution.
+The method provides low computation cost and low memory requirements for storing data. However, the model does not take into account the affection of the wireless network environments, which
+is crucial in practical implementation of 6LoWPAN.
+The Bayesian approach is used to calculate the probability of an event in the future based on the
+current data. This approach is therefore, usually used to calculate the trust model between the nodes
+in WSN. There is a threshold for the trust level so that if a node monitoring shows that this value
+is exceeded, it will be considered malicious. Another direction of applying Bayesian method is to
+clarify the relationship between the network operation parameters to the attack possibility. When
+the system has a reference model of this relationship, it can tell which attacks can be initiated from
+the anomaly data collected.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+An example for this approach is the work in [43], which used Bayesian Trust Model for calculating the media access control sublayer data of WSN to mitigate the unfairness and consequent upon
+the DoS attacks. This solution can be generalised and adapted to other protocols by adjusting the
+networks and trust model parameters.
+Another example is the work of Momani [44] that combines the data trust and communication
+trust to infer the overall trust between nodes. The author showed the need to combine these two trust
+values for preventing misleading or breaking down threats of the network. The new trust model is
+represented by the Bayesian Fusion Algorithm, which combines these two trust values. Building the
+trust value for each node is important because it can show the reputation of the node behaviours and
+tell which node is malicious.
+Another similar approach to the Bayesian solution is the Hidden Markov Model technique. This
+method can profile the normal and abnormal patterns when analysing the data. Song et al. [45]
+used a Weak Hidden Markov Model, which is a nonparametric version of the Hidden Markov
+Model, to state the transition probabilities to reduce to the rules of reach ability. The detecting
+mechanism is conducted by the scoring scheme and the deviation alarm. This approach showed the
+effectiveness in detecting several kinds of attack but the false positive error rate is high and the
+system still requires a large amount of resources. This needs to be improved before applying in
+the 6LoWPAN environments.
+4.3.3.4. Data mining. The data mining approach usually analyses the Rule-based using machine
+learning techniques. In this approach, the system is implemented in a distributed configuration and
+to reach a high accuracy, it requires great computational power and a large memory space. Some
+techniques in this direction focus on classifying the data to reduce the IDS analysis work.
+Xiong and Wang [46] proposed the support vector machine (SVM) technique to classify the feature subset as a positive feedback adjustment factor for later use in ant colony optimisation. The
+method reduced the feature subset while improving the classification accuracy.
+Kaplantzis et al. [47] also used SVM with polynomial kernel or radial basis function model for
+detecting selective forwarding and black hole attacks. The chosen parameters for monitoring are
+bandwidth and hop count within a sliding window. This solution minimised the false positive rate
+by utilising the SVM technique. However, it consumes resources in computing and communicating,
+which makes it difficult in scalability and adapting to the network environment changes.
+4.3.3.5. Software engineering. The software engineering approaches are in two ways: software
+implemented on a server or a host, and hardware implemented to build a product with its own hardware platform. This approach can improve the programming standard for the IDS code by using a
+state machine system to follow the state transition of the attack patterns and provides a means to
+follow the state change in the system. This approach is applied in a slightly different purpose: define
+a normal behaviour in specification-based IDS [48].
+4.3.3.6. Agent-based intrusion detection system. Agent-based IDS provides a way to divide the
+workload through distributed IDS so that it can speed up network operation. There are two
+approaches in this direction. The autonomous distributed agents cooperate between agents. It provides a simpler system that is easier to manage but on the other hand, it increases the overhead, and
+causes computation bottleneck and transmission delay problems. The other method is the mobile
+agents, which are used to travel through the network. It does not create much overhead but suffers
+from the integrity check and port scanning issues.
+4.3.3.7. Specification-based approach. The specification-based approach can fit well with the principles of abstraction, simplify the feature selection and tailor the monitor to the needs of its own
+systems. Moreover, it can scale well and simplifies the test operation for deciding whether or not
+a set of events constitutes a violation. It can also take advantage of the knowledge system administrators have about possible attacks, and provide accurate attack detection with low false alarm
+rates [49, 50].
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+The drawbacks of this method are the lack of ability in defining the difference between the allowable and illegal behaviours and costly in terms of the system resources they require functioning.
+Besides that, the rule complexity can have a direct trade-off with performance, and the system also
+depends on the user guidance in developing the specification of the normal system behaviour.
+The main techniques used for these specifications are state machine transitions, machine learning for pattern recognition and statistical analysis to derive automatically the program specifications [49, 50]. Literature presented many specifications on some protocols working in a similar
+environment with 6LoWPAN such as AODV, OLSR and Connectionless Routing Protocol.
+Ning and Sun [51] analysed change on AODV operations when attacks happen, which mainly
+focused on the fields in the two messages RREQ and RRPL. Tseng et al. [52] also analysed the
+vulnerabilities on some fields of the Route Request and Route Reply messages such as ID, hop
+count, header and sequence number. These vulnerabilities lead to some threats like Man-in-theMiddle or Tunnelling Attack. Moreover, Grönkvist et al. [53] added other attacks like Forged
+Sequence number and Forged Hop count. On the basis of those analyses, Grönkvist et al. [53]
+provided different ways to specify the Route Request and Route Reply messages of the protocol
+based on the finite state machine technique. The main idea is to analyse the received messages for
+detecting anomaly transitions, which is defined in the threat identifications.
+Tseng et al. [54] proposed an OLSR specification, which used an extended finite state machine
+technique with a backward checking algorithm to verify the trace and determine the corresponding transition from the last event. Possible changing on the fields of Hello and TC messages
+are also defined. The state transition analysis technique was used for modelling host-based and
+network-based intrusions in the network environment. Orset et al. [55] proposed extended finite
+state machines, which specify the formal specifications of the correct OLSR behaviours, and uses
+a backward checking algorithm to detect run-time violations of the implementations. The authors
+developed some semantic rules for quickly checking the specifications.
+Mostarda and Navarra [56] specified the operation of Connectionless Routing Protocol by defining a global automaton based on some basic routing properties, which should be guaranteed. The
+system then can check the state of the network nodes based on this automaton. The author mentioned two ways to monitor the transitions, either by changing the protocol specification by adding
+a field in the message that shows the transition state or sniffing the sequence of invocations to find
+the unique chain of rules that matches the sequence. Some semantic rules were also defined for
+simplifying the checking progress.
+To apply specification-based IDS to 6LoWPAN, RPL operations need to be specified. The prominent attacks towards RPL also need to be analysed to extract specific changes they will cause for
+this specification model. The work will require specialist knowledge on RPL operations and the lack
+of the ability to deal with the new attacks, which can be learned to overcome the specification. To
+improve this approach, there is a need to combine other techniques, such as the statistic method for
+helping discover new specification from data monitoring and analysing.
+5. RESEARCH OPPORTUNITIES
+As previously discussed, 6LoWPAN threats can be divided into two parts: external and
+internal/insider. The former aims at breaching network confidentiality, identity, authentication,
+which can only be protected by the cryptography solution, and the latter aims at breaking the
+network performance. Existing literatures reveal a prominent research potential in IDS for 6LoWPAN to combat internal/insider threats. The security goal is to provide a monitoring system that
+will attempt to detect anomalous malicious behaviour in network operation and to prevent it from
+harming the network performance. The main challenges when building such a system are discussed
+as follows:
+ Choosing the optimal IDS techniques: The techniques should have high accuracy detection
+
+level, high speed and adapt with 6LoWPAN resource constraint. The techniques also need to
+have the ability to detect new types of attacks for dealing with the fast development of security threats nowadays. Research already shows promising techniques in using statistic data to
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+discover the behaviours of new attacks in a similar network context [49, 50]. However, these
+methods need to be further developed to adapt to the 6LoWPAN situation.
+ Building the ability to trace back the malicious sources, and decide what actions to use for eliminating attackers. The consequences of the actions toward malicious nodes should be taken into
+account because the main objective of the security system afterward is to ensure an effective
+network performance.
+A system like that can be built with many options: the architectures, the features to extract for
+monitoring, or the detection techniques. It is a new, important and fertile ground for research in
+6LoWPAN security provision.
+In our view, a normal network performance can only be guaranteed if (i) the network is in its
+optimised topology; (ii) every node works with its reasonable capability; and (iii) the system has
+malicious resource trace-back ability to trace and eliminate attack resource after detection. The
+energy issue because of adding IDS to the network can be solved by, for example, utilising the
+hierarchical monitoring architecture in Section 4.3.2.1 to minimise the computation work load in
+the monitoring nodes and the communication overhead over the network or choosing lightweight
+IDS techniques. The system that we envisage therefore has three main parts for satisfying these
+conditions: (i) the RPL specification-based IDS to monitor 6LoWPAN optimised topology; (ii) the
+anomaly-based used in cooperation with specification-based to monitor the node performance; and
+(iii) the statistical-based component to reveal the attacker source. The system model, which can
+serve as the baseline for researchers to move on in this field, is shown in Figure 6.
+The system functionalities are discussed as follows:
+RPL Specification-based IDS component: As analysed in Section 3, the 6LoWPAN network
+layer has many threats that aim at breaking its optimised topology. RPL is the underlying routing
+protocol for 6LoWPAN, so building a specification-based IDS for RPL is one of the most efficient
+way to detect fast and accurately any 6LoWPAN attacks that break its optimised topology set up.
+Initial work on securing RPL is the work of Tsao [57], which focuses on protecting RPL control
+messages (DIO, DIS and DAO) and the routing information in IPv6 Hop-by-Hop Option Header
+
+Figure 6. IDS for securing 6LoWPAN.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+and Routing Header. The author suggests that RPL security objectives should be (i) participants
+of the DIO, DIS and DAO message exchanges are authenticated; (ii) the received DIO, DIS and
+DAO messages are not modified during transportation; (iii) the received DIO, DIS and DAO messages are not retransmissions of previous messages; and (iv) the content of the DIO, DIS and
+DAO messages may be made legible to only authorized entities. Their solution focuses on adding
+encryption mechanism for those control messages. These cryptography mechanisms are given in
+more detail in [15]. However, they lack the ability in detecting internal attackers that break the
+protocol operation.
+Therefore, we believe a similar approach as discussed in Section 4.3.3.2 should be applied in RPL.
+The IDS will collect the RPL routing information and check the state of control messages transmissions to detect the routing attacks. Each monitor node will observe the communications between
+the monitored nodes to extract the topology information, mostly the parent–child relationship, to
+detect anything invalid in the topology. Besides that, any topology change will be remembered, and
+a threshold is defined so that if a node creates too many changes in its relationships, an alarm will
+be raised. On the other hand, monitor nodes also listen to the behaviours of their monitored members, so that any dropping, delaying or overusing of control messages can be detected. The detailed
+specification is illustrated in Figure 7.
+A possible way to improve the accuracy of the system is to monitor the FSM (Finite State
+Machine) states and transitions between them, because they also have patterns when following the
+normal operation of the network. The Bayesian network technique with the advantage of predicting
+future transition to classify anomaly transition is a good candidate to be investigated. For example,
+in normal condition, a state transition happens only several times a minute. However, if that transition is replied again for many times exceeding the threshold suggested by the Bayesian model,
+although it does not break the specification model, it still can be considered a new threat. Incorporating such technique in the RPL specification-based IDS will help detect unknown attacks that
+violate RPL’s routing rules. For example, consider the Rank attack in Section 3.4, whose nature is to
+create illegal communication between nodes with lower rank and nodes with higher rank. When the
+monitor system analyses the transmission between those malicious nodes and checks the validation
+of the topology, it will easily discover any operation that breaches the rule and thus raise an alarm.
+Anomaly-based IDS component: The RPL specification-based IDS alone is not enough to protect 6LoWPAN operation. This is because the monitoring system will have no clue to detect threats
+that are not violating the RPL’s routing rules. For instance, a benign malicious node initiates data
+packet dropping; such attacks disrupt the network QoS without violating the RPL’s rules. Therefore,
+anomaly-based IDS [13] should be added to the system, which will include data mining (i.e. network
+
+An example of a specificationbased for RPL
+
+S1
+
+1
+IP layer
+
+Control messages
+send/receive
+monitoring
+
+Traffic
+monitoring of
+control
+messages
+(DIO, DAO,
+DIS)
+
+S2
+2
+
+S
+
+S3
+
+3
+
+Suspicious
+route
+
+S4
+4
+
+RPL
+topology
+monitoring
+Optimised route
+
+Routing
+specification
+monitoring
+
+S5
+S
+
+5
+
+State:
+S: start & normal state
+S1: Suspicious control
+messages delay attack
+S2: Suspicious control
+messages dropping attack
+S3: Suspicious resource
+depleting attack
+Transition:
+1. Respond with unreasonable
+delay
+2. No respond
+3. Too much communication
+
+State:
+S4: Invalid topology
+S5: Suspicious topology attack
+Transition:
+4. Child/parent relationship that
+break the rank rule
+5. Number of preferred parent
+change exceeds a threshold
+
+Figure 7. Specification-based IDS for securing RPL.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+parameters such as delivery rate, end-to-end delay, throughput, etc.) and data fusion techniques to
+detect anomalous behaviour in the network. The anomaly-based IDS will analyse the relationships
+of those network parameters in the event of attacks as symptoms to diagnose the attacks or to prevent future attacks. For example, the wormhole attack can decrease the packet delivery ratio and
+increase the end-to-end delay. Evaluating the two parameters individually may be seen as acceptable in a given range; however, evaluating the parameters in a combined manner may indicate a
+threat. Therefore, statistical and probability techniques should be used for analysing the relationship
+between network parameters for potential threats. Bayesian network, strong at inferring the network parameters and their relationships, is one of the best techniques that can be used. The model
+can be asked to give probability of specific attacks like black hole or wormhole, given the network
+performance monitored data such as delivery ratio and end-to-end delay. This probability inferring
+can be used to create a combination threshold for improving the accuracy of the anomaly-based
+IDS part.
+Once implemented, the second part can protect 6LoWPAN from any threats that use malicious
+nodes to downgrade the node QoS in the network. It is necessary to say, without the first part, that
+the second part cannot provide good security on network operation, because attackers can downgrade the performance just by setting up bad topology while still letting the nodes work with their
+best performance. Therefore, these two protection parts, one tracking the optimised topology and
+one monitoring the node performance, will work in cooperation to provide a robust security for
+6LoWPAN operation.
+Tracing back component: This problem can be analysed using statistical techniques like the
+Bayesian operation model. The model will attempt to predict the network nodes that behave maliciously by analysing statistical data from the monitoring nodes in the network and the detection
+outcomes from the previous two components.
+To sum up, our foresight 6LoWPAN security system operates in two-layer cooperative detection
+as illustrated in Figure 8: Layer 1 is the RPL specification-based IDS for detecting all the threats
+that violate RPL’s operation rules for ensuring optimized network topology, while Layer 2 is the
+anomaly-based IDS that ensure node performance. After detecting the malicious behaviors, the system will attempt to trace back and eliminate the attacker node, to ensure protection of the network
+QoS. We believe that this system can provide a robust security countermeasure for the 6LowPAN.
+The system can be expanded more by adding other protection layers, but they should work in cooperation with previous layers. The new protection layer should only aim at the attacks that cannot be
+detected by previous layers.
+
+Attack n
+Attack 1
+
+detected
+detected
+
+detected
+
+detected
+detected
+
+undetected
+
+undetected
+
+undetected
+
+Tracing
+back
+
+Layer 1: RPL
+specification-based for
+ensuring RPL
+optimised topology
+
+detected
+
+Layer 2: statistic
+anomaly-based for
+guaranteeing node
+performance
+
+Figure 8. IDS protection layers for securing 6LoWPAN.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+6. CONCLUSION
+In this paper, we analysed the current IoT security through 6LoWPAN implementation with the
+focus on IDS approaches to secure the network operation. First, we clarified the main security
+threats related to all 6LoWPAN parts: WSN, IPv6 and adaptation layer. We also presented the current and potential threats, that can happen to RPL and directly affect network operation. The two
+most important security approaches for this network, cryptography and IDS, are reviewed and the
+needs for combining these two to provide total security from internal and external attackers was
+clarified. We then analysed the main issues of applying IDS in WSN and Internet side of 6LoWPAN
+and their cooperation. We reviewed a number of the most prominent techniques in securing network
+operation and analysed their application ability in 6LoWPAN. Finally, we presented some potential research works and our approach towards building an IDS for securing 6LoWPAN operation.
+Our main ideas are to use an RPL specification-based IDS for securing network topology while
+combining with a statistical anomaly technique to secure node performance. Our next targets are to
+implement those ideas and evaluate their accuracy and efficiency on 6LoWPAN operation.
+REFERENCES
+1. Guang-xue Y, Feng-jiao L. Investigation of Security and defence system for home based on Internet of Things.
+International Conference on Web Information Systems and Mining (WISM), Sanya, 2010; 8–12.
+2. Shen G, Liu B. The visions, technologies, applications and security issues of Internet of Things. International
+Conference on E -Business and E -Government (ICEE), Shanghai, China, 2011; 1–4.
+3. Tan L, Wang N. Future internet: The Internet of Things. 2010 3rd International Conference on Advanced Computer
+Theory and Engineering (ICACTE), Chengdu, China, 2010; 376–380.
+4. Atzori L, Iera A, Morabito G. The Internet of Things: A survey. Computer Network 2010; 54(15):2787–2805.
+5. ITU Internet Reports 2005: The Internet of Things. (Available form: http://www.itu.int/osg/spu/publications/
+internetofthings/).
+6. Xiong L, Zhou X, Liu W. Research on the architecture of trusted security system based on the Internet of
+Things. 2011 International Conference on Intelligent Computation Technology and Automation (ICICTA), Shenzhen,
+Guangdong, 2011; 1172–1175.
+7. Kim H. Protection against packet fragmentation attacks at 6LoWPAN adaptation layer. Convergence and Hybrid
+Information Technology, ICHIT ’08, Daejeon, 2008; 796–801.
+8. Shelby Z, Bormann C. 6LoWPAN: The Wireless Embedded Internet. Wiley-Blackwell: West Sussex, United
+Kingdom, 2009.
+9. Martocci J, De Mil P, Riou N, Vermeylen W. RFC 5867: Building Automation Routing Requirements in Low-Power
+and Lossy Networks, 2010. (Available from: http://tools.ietf.org/html/rfc5867).
+10. Brandt A, Buron J, Porcu G. RFC 5826: Home Automation Routing Requirements in Low-Power and Lossy
+Networks, 2010. (Available from: http://tools.ietf.org/html/rfc5826).
+11. Pister K, Thubert P, Dwars S, Phinney T. RFC 5673: Industrial Routing Requirements in Low-Power and Lossy
+Networks, 2009. (Available from: http://tools.ietf.org/html/rfc5673).
+12. Dohler M, Watteyne T, Winter T, Barthel D. RFC 5548: Routing Requirements for Urban Low-Power and Lossy
+Networks, 2009. (Available from: http://tools.ietf.org/html/rfc5548).
+13. Vasseur J-P, Dunkels A. Interconnecting Smart Objects with IP: The Next Internet. Morgan Kaufmann: Burlington,
+Massachusetts, USA, 2010.
+14. Oliveira LML, de Sousa AF, Rodrigues JJPC. Routing and mobility approaches in IPv6 over LoWPAN mesh
+networks. International Journal of Communication Systems 2011; 24(11):1445–1466.
+15. Winter T, Thubert P, Brandt A, Clausen T, Hui J, Kelsey R, Levis P, Pister K, Struik R, Vasseur JP. RPL:
+IPv6 Routing Protocol for Low power and Lossy Networks - draft-ietf-roll-rpl-19, 2011. (Available from: http:
+//tools.ietf.org/html/draft-ietf-roll-rpl-19).
+16. Kavitha T, Sridharan D. Security vulnerabilities in wireless sensor networks: A survey. Journal of Information
+Assurance and Security 2009; 5:31–44.
+17. Shi E, Perrig A. Designing secure sensor networks. IEEE Wireless Communications 2004; 11(6):38–43.
+18. Kannhavong B, Nakayama H, Kato N, Jamalipour A, Nemoto Y. A study of a routing attack in OLSR-based mobile
+ad hoc networks. International Journal of Communication Systems 2007; 20(11):1245–1261.
+19. Nikander P, Kempf J, Nordmark E. RFC 3756: IPv6 Neighbor Discovery (ND) Trust Models and Threats, 2004.
+(Available from: http://www.ietf.org/rfc/rfc3756.txt).
+20. Roman R, Lopez J. Integrating wireless sensor networks and the Internet: a security analysis. Internet Research 2009;
+19(2):246–259.
+21. Cho EJ, Kim JH, Hong CS. Attack model and detection scheme for Botnet on 6LoWPAN. Proceedings of the 12th
+Asia-Pacific Network Operations and Management Conference on Management Enabling the Future Internet for
+Changing Business and New Computing Services, Springer-Verlag: Jeju, South Korea, 2009; 515–518.
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+22. Kushalnagar N, Montenegro G, Schumacher C. RFC 4919: IPv6 over Low-Power Wireless Personal Area Networks
+(6LoWPANs): Overview, Assumptions, Problem Statement, and Goals, 2007. (Available from: http://tools.ietf.org/
+html/rfc4919).
+23. Ayuso J, Marin L, Jara A, Skarmeta AFG, Ayuso J. Optimization of public key cryptography (RSA and ECC) for
+8-bits devices based on 6LoWPAN. 1st International Workshop on the Security of the Internet of Things (SecIoT’10),
+Tokyo, Japan, 2010.
+24. Liu Z, Groszschaedl J, Kizhvatov I. Efficient and side-channel resistant RSA implementation for 8-bit AVR
+microcontrollers. 1st International Workshop on the Security of the Internet of Things (SecIoT’10), Tokyo, Japan,
+2010.
+25. Wang Y. Statistical Techniques for Network Security: Modern Statistically-Based Intrusion Detection and Protection.
+IGI Global: Hershey, New York, 2008.
+26. da Silva APR, Martins MHT, Rocha BPS, Loureiro AAF, Ruiz LB, Wong HC. Decentralized intrusion detection in
+wireless sensor networks. 1st ACM International Workshop on Quality of Service; Security in Wireless and Mobile
+Networks, Montreal, Quebec, Canada, 2005; 16–23.
+27. Strikos A. A full approach for intrusion detection in wireless sensor networks, 2007. School of Information and
+Communication Technology, KTH report.
+28. Amini F, Mı̌síc VB, Mı̌síc J. Chapter 6. Intrusion detection in wireless sensor networks. In Security in Distributed, Grid, Mobile, and Pervasive Computing, Xiao Y (ed.). Auerbach Publication: Boca Raton, New York,
+2007; 111–128.
+29. Wang X, Qian H. Hierarchical and low-power IPv6 address configuration for wireless sensor networks. International
+Journal of Communication Systems 2011:1099–1131.
+30. Amin SO, Young Yj, Siddiqui MS, Hong CS. A novel intrusion detection framework for IP-based sensor networks.
+Proceedings of the 23rd International Conference on Information Networking, IEEE Press: Chiang Mai, Thailand,
+2009; 285–287.
+31. Mao Y. A semantic-based intrusion detection framework for wireless sensor network. 2010 6th International
+Conference on Networked Computing (INC), Gyeongju, Korea (South), 2010; 1–5.
+32. Chen R-C, Haung Y-F, Hsieh C-F. Ranger intrusion detection system for wireless sensor network with sybil attack
+based on ontology. Third WSEAS International Conference on Biomedical Electronics and Biomedical Informatics
+(BEBI ’10), Taipei Taiwan, 2010; 176–180.
+33. Lee SJ, Lee HY, Cho TH. A threshold determining method for the dynamic filtering in wireless sensor networks
+based on fuzzy logic. IJCSNS International Journal of Computer Science and Network Security 2008; 8(4):155–159.
+34. Chi SH, Cho TH. Fuzzy Logic Anomaly Detection Scheme for Directed Diffusion Based Sensor Networks. FSKD
+2006, Xian, China, 2006; 725–734.
+35. Parekh B, Cam H. Minimizing false alarms on intrusion detection for wireless sensor networks in realistic
+environments. Military Communications Conference, Orlando, Florida, 2007; 1–7.
+36. Dong RS, Liu LL, Liu JM, Xu XL. Intrusion detection system based on payoff matrix for wireless sensor networks.
+Genetic and Evolutionary Computing, Guilin China, 2009; 3–6.
+37. Estiri M, Khademzadeh A. A game-theoretical model for intrusion detection in wireless sensor networks. 2010 23rd
+Canadian Conference on Electrical and Computer Engineering (CCECE), Calgary, AB, 2010; 1–5.
+38. Estiri M, Khademzadeh A. A theoretical signaling game model for intrusion detection in wireless sensor networks.
+2010 14th International Telecommunications Network Strategy and Planning Symposium (NETWORKS), Warsaw,
+2010; 1–6.
+39. Banerjee S, Grosan C, Abraham A. Intrusion detection on sensor networks using emotional ants. International
+Journal of Applied Science and Computations 2005; 12(3):152–173.
+40. Soroush E, Habibi J, Abadeh MS. Intrusion detection using a boosting ant colony based data miner. Proceedings of
+the 11th International CSI Computer Conference, Tehran, Iran, 2006; 563–566.
+41. Phuong TV, Hung LX, Cho SJ, Lee YK, Lee SY. An Anomaly Detection Algorithm for Detecting Attacks in Wireless
+Sensor Networks, Intelligence and Security Informatics. Lecture Notes in Computer Science, 2006, Vol. 3975/2006.
+Springer, 2006.
+42. Ponomarchuk Y, Seo D-W. Intrusion detection based on traffic analysis in wireless sensor networks. 2010 19th
+Annual Wireless and Optical Communications Conference (WOCC), Shanghai, 2010; 1–7.
+43. David BM, de Sousa TR, Jr. A Bayesian trust model for the MAC layer in IEEE 802.15.4 networks. I2TS 2010 - 9th
+International Information and Telecommunication Technologies Symposium, Rio de Janeiro, Brazil; 2010.
+44. Momani M. Bayesian fusion algorithm for inferring trust in wireless sensor networks. Journal of Network
+2010; 5(7):815–822.
+45. Song X, Chen G, Li X. A weak hidden Markov model based intrusion detection method for wireless sensor networks.
+2010 International Conference on Intelligent Computing and Integrated Systems (ICISS), Guilin, 2010; 887–889.
+46. Xiong W, Wang C. Feature selection: A hybrid approach based on selfadaptive ant colony and support vector
+machine. International Conference on Computer Science and Software Engineering, Wuhan, Hubei, 2008; 751–754.
+47. Kaplantzis S, Shilton A, Mani N, Sekercioglu YA. Detecting selective forwarding attacks in wireless sensor
+networks using support vector machines. 3rd International Conference on Intelligent Sensors, Sensor Networks and
+Information, 2007. ISSNIP 2007, Melbourne, Qld, 2007; 335–340.
+48. Kabiri P, Ghorbani AA. Research on intrusion detection and response: A survey. International Journal of Network
+Security 2005; 1(2):84–102.
+
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+IOT, 6LOWPAN, RPL, QOS SECURITY THREATS, IDS
+
+49. Sekar R, Gupta A, Frullo J, Shanbhag T, Tiwari A, Yang H, Zhou S. Specification-based anomaly detection:
+a new approach for detecting network intrusions. Proceedings of the 9th ACM Conference on Computer and
+Communications Security, ACM: Washington, DC, USA, 2002; 265–274.
+50. Stakhanova N, Basu S, Wong J. On the symbiosis of specification-based and anomaly-based detection. Computers &
+Security 2010; 29(2010):253–268.
+51. Ning P, Sun K. How to misuse AODV: A case study of insider attacks against mobile ad-hoc routing protocols.
+Information Assurance Workshop, 2003, IEEE Systems, Man and Cybernetics Society North Carolina State, 2003;
+60–67.
+52. Tseng C-Y, Balasubramanyam P, Ko C, Limprasittiporn R, Rowe J, Levitt K. A specification-based intrusion
+detection system for AODV. SASN ’03 Proceedings of the 1st ACM Workshop on Security of Ad Hoc and Sensor
+Networks, New York, 2003; 125–134.
+53. Grönkvist J, Hansson A, Sköld M. Evaluation of a specification-based intrusion detection system for AODV.
+The Sixth Annual Mediterranean Ad Hoc Networking WorkShop, Corfu, Greece, 2007; 121–128.
+54. Tseng CH, Song T, Balasubramanyam P, Ko C, Levitt KN. A specification-based intrusion detection model for
+OLSR. Recent Advance in Intrusion Detection RAID 2005; 2005:330–350.
+55. Orset J-M, Alcalde B, Cavalli A. An EFSM-based intrusion detection system for ad hoc networks. In Lecture Notes
+in Computer Science, Vol. 3707/2005. Springer-Verlag: Berlin Heidelberg, 2005; 400–413.
+56. Mostarda L, Navarra A. Distributed intrusion detection systems for enhancing security in mobile wireless sensor
+networks. International Journal of Distributed Sensor Networks 2008; 4:83–109.
+57. Tsao T. Internet-Draft v00: A Security Design for RPL: IPv6 Routing Protocol for Low Power and Lossy Networks,
+2011. (Available from: http://tools.ietf.org/html/draft-sdt-roll-rpl-security-04).
+
+AUTHORS’ BIOGRAPHIES
+
+Anhtuan Le earned his BSc degree from Hanoi University of Technology, Vietnam in
+2006 and his master degree in Computer Network Security from Middlesex University,
+United Kingdom in 2009. He is currently a PhD candidate in the Department of Computer
+Communication, Middlesex University, UK since October 2009. His interested research
+areas are wireless security, ad hoc, sensor network, and intrusion detection.
+
+Jonathan Loo a.k.a. Kok-Keong Loo received his MSc degree in Electronics (with
+Distinction) from the University of Hertfordshire, UK in 1998 and his PhD degree in
+Electronics and Communications from the same university in 2003. Currently, he is a
+Reader (Associate Professor) at the School of Engineering and Information Sciences,
+Middlesex University, UK. He leads a research team in the area of communication and
+networking. His research interest includes network architecture, communication protocols,
+network security, embedded systems, video coding and transmission, wireless communications, digital signal processing, and optical networks. He has successfully graduated 11
+PhDs as director of studies in the aforementioned specialist areas.
+
+Aboubaker Lasebae is a principal-lecturer and the director of postgraduate programmes
+at Middlesex University. He graduated from Middlesex University with a PhD degree and
+obtained his masters from Southampton University. His BASc was from the University
+Regina Canada. His research expertise lies and published in the following fields: mobile
+cellular systems, computer and network security, QoS, wireless networks, vertical
+handovers, and telecomm systems.
+
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+A. LE ET AL.
+
+Mahdi Aiash received his BEng degree in Computer Engineering from Aleppo University, Syria in 2004 and a master degree (MSc) from Middlesex University, London, UK in
+2008. Recently, he finished his PhD at the same University. His main research area is in
+information security and networking.
+
+Yuan Luo obtained his BEng degree at Chongqing University in China in 1983, MSc
+degree at South China University of Technology in China in 1986, and PhD degree at
+Staffordshire University in UK in 2001. He is currently working as a senior lecturer at
+Middlesex University in UK. His main research interests include multi-agent system, wireless sensor networks, computer networks and security, mobile computing, and
+semantic web.
+
+Copyright © 2012 John Wiley & Sons, Ltd.
+
+Int. J. Commun. Syst. (2012)
+DOI: 10.1002/dac
+
+

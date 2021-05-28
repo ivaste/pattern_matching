@@ -1,0 +1,663 @@
+University of Padova
+Master’s Degree in Computer Engineering
+
+Internet of Things and Smart Cities
+- 6 LoWPAN: Ideas for efficient routing strategies -
+
+Student: Luca Masiero
+1217211
+
+Supervisor: Professor Lorenzo Vangelista
+
+Academic Year 2020/2021
+May 31, 2021
+
+Contents
+1 6 LoWPAN: A brief history
+
+2
+
+2 6 LoWPAN: Functions and Structure
+
+3
+
+3 6 LoWPAN: Security requirements
+
+4
+
+4 6 LoWPAN: Address management policy
+4.1 Adaptive layer . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.2 Header compression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+5
+5
+6
+
+5 Routing: An open research field
+5.1 Routing: General framework . . . .
+5.2 Routing: Mesh-Under vs Route-Over
+5.3 Routing: Topology . . . . . . . . . .
+5.4 Routing: Main requirements . . . . .
+
+7
+7
+7
+8
+9
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+Introduction
+The Internet of Things (commonly known as IoT) is constantly developing in a rapid way and
+gaining momentum from both academic research and Industry 4.0, undisputed protagonist of the
+Fourth Industrial Revolution.
+The advent of IoT increased deployment of resource constrained wireless devices in a market
+growing in size day by day. Always connected sensors and actuators advance business models
+concerning new products, process innovations and data.
+The main concept to be kept in mind when talking about Internet of Things is that standard
+Internet protocols are used to interconnect a local network made of smart things (also called
+objects), distributed all around the world, for data and information harvesting with functions
+such as identification, location, positioning, monitoring and many others.
+Thanks to the development of new and well-performing technologies (e.g., RFID1 or embedded
+sensors and actuators) IoT has, nowadays, a wide spectrum of real-life applications, ranging from
+transportation and logistics to healthcare, from gaming to smart environments, from robotics to
+Machine Learning and Artificial Intelligence.
+Smart things can connect to each other exchanging information and making decisions for their
+own users. This will give rise to a new connectivity dimension called connectivity for anything:
+ITU endorses, in fact, the definition of IoT as a network that is ”available anywhere, anytime, by
+anything and anyone”.
+In this report, the origins of 6 LoWPAN are presented in Section 1. In Section 2 a special
+attention will be given to both Functions and Structure of 6 LoWPAN, while in Section
+3 Security requirements will be analyzed. Section 4 considers the Address management
+policy and Section 5 concludes this work by presenting the Routing problem, along with personal
+thoughts on possible and promising ideas.
+
+Figure 1 . 6 LoWPAN’s logo.
+
+1
+
+6 LoWPAN: A brief history
+
+6 LoWPAN is the name, born in the first months of 2005, of a Working Group within the IETF2 ,
+whose purpose was to define specifications for the transmission of IPv6 packets over IEEE 802.15.4
+networks.
+The first draft was published on July 11, 2005 and saw the participation of remarkable companies
+such as Microsoft and Intel. After thirteen revisions, the official RFC3 was published and became
+1
+
+RFID stands for Radio Frequency IDentification.
+IETF stands for Internet Engineering Task Force.
+3
+RFC stands for Request For Comments.
+2
+
+2
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+official in September 2007, but only at the end of the third quarter of 2008 6 LoWPAN would be
+recognized as an Internet Standard.
+During 2007, important milestones have been achieved and are necessary to understand the
+standard’s development. In March Arch Rock, a private Californian company, put on sale the
+first commercial implementation based on the IETF4 6 LoWPAN draft. In May, the University of
+Bremen conducted a study leading to the first open source implementation. In June, Sensinode,
+a Finnish company, released, under General Public License, an implementation of this standard
+based on its own hardware platforms. The company expected to market a 6 LoWPAN compatible
+router within the first quarter of 2008. At the last IETF meeting in December, Arch Rock and
+Hitachi conducted an interoperability test that demonstrated that 6 LoWPAN devices can work
+together over IPv6 systems.
+
+2
+
+6 LoWPAN: Functions and Structure
+
+Figure 2 . Representation of a 6 LowPAN network.
+
+As stated in the Introduction, the key components for enabling widespread sensing of the
+physical world in IoT systems are sensors and things that are connected to low-power wireless
+networks in locations that are, from the geographic point of view, dispersed and characterized from
+little or completely inexistent networking infrastructures.
+This kind of networks and devices can be characterized by a number of constraints that force
+crucial design compromises and restrictions at the implementation level and enabling them to
+participate, in an active way, in the Internet-style Internetworking would represent advantages and
+efficiencies in the overall IoT system design.
+4
+
+The IETF can be defined as ”a loosely self-organized group of people who make technical or other contributions
+to the engineering and evolution of the Internet and its technologies.” It is an organization based on the spontaneous
+contribution of various Working Groups, formed by a small number of individuals interested in a specific and limited
+topic, with a precise task to complete. The activities to be performed take mainly place in two distinct moments:
+the mailing lists and international meetings.
+There is no membership in the strict sense of the word in the IETF, so it is sufficient to register and participate
+voluntarily to the activities.
+This premise is important in order to understand the nature of 6 LoWPAN, which is an open standard. It is a
+standard not only because it is free to use, but also because the specifications, concerning circumscribed subjects, are
+made available to the public during their definition through documents, better known as Internet Drafts. Internet
+Drafts are embryonic specifications that are valid only for six months, after which they may be removed, modified,
+or approved as RFCs (the next level of the standard’s approval process).
+
+3
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+The 6 LoWPAN5 is a standardized protocol adaptation layer that accomplishes this task and
+defines the use of IP networking over IEEE 802.15.4 low-power wireless networks, bringing the IP
+capability to devices at the edge: in this way they can be both sources and destinations reachable
+from the Internet, making global connectivity possible.
+To be undelined is the fact that the use of IP provides a remarkable number of benefits (e.g.,
+interoperability, naming and address translation, established transport and application protocols,
+security, scalability, reliability and manageability); IPv6 provides ample addressing capability to
+accommodate projected growth of IoT endpoints well into the future: IPv4, in fact, has an address
+field made of 32 bits long, setting, in this way, an upper limit of 232 distinct addresses6 . This
+number is, unfortunately, insufficient for the billions of IP addressable IoT things on the horizon
+and IPv6, for this reaason, has a 128-bit address field and the capability of 1036 unique addresses.
+6 LoWPAN represents the network-layer building block that brings Internet compatibility via
+adaptation to constrained networks and nodes. On top of the IEEE 802.15.4 PHY and MAC, it
+works well with CoAP7 and completes the protocol stack suitable for use with constrained IoT
+devices and networks8 .
+
+Figure 3 . Comparison of 6 LoWPAN with typical TCP/IP protocol stacks.
+
+3
+
+6 LoWPAN: Security requirements
+
+The RFC4919 specifies a list of security requirements for 6 LoWPAN (mainly aimed at protecting
+the communications from the users to the sensor network). The most important requirements are
+the following:
+5
+
+6 LoWPAN stands for IPv6 over Low-Power Wireless Personal Area Networks.
+The exact number of addresses is 4,294,967,296.
+7
+CoAP stands for Constrained Application Protocol and it enables nodes to communicate with the Internet using
+similar protocols. CoAP is designed for use between devices on the same constrained network (e.g., Low-Power or
+Lossy Networks), between devices and general nodes on the Internet, and between devices on different constrained
+networks both joined by an internet.
+8
+6 LoWPAN also provides a definition for encapsulating TCP and UDP packets into payload of IEEE 802.15.4
+MAC frames.
+6
+
+4
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+•
+•
+•
+•
+•
+
+Confidentiality: only authorized users can access the required information;
+Authentication: only trusted sources originate the data;
+Integrity: during transmissions the data that is received remains unchanged;
+Availability: the data is accessible when needed;
+Robustness and Resiliency provide a certain level of security even when some nodes are
+compromised;
+• Energy efficiency: the objective is to maximize network lifetime.
+
+4
+
+6 LoWPAN: Address management policy
+
+IEEE 802.15.4 defines two types of addresses: IEEE EUI-64 bit extended addresses, globally unique,
+or 16 bit short addresses, unique only within the PAN. Both types are supported by 6 LoWPAN.
+To use short addresses at the network level, since they are only available after they have been
+assignment by the PAN coordinator and their validity is limited to the validity of the association,
+6 LoWPAN requires that their use be made under certain conditions and within certain limits.
+In 6 LoWPAN it is assumed that a PAN is mapped within a specific IPv6 link: this implies the
+use of a common prefix for the devices in the network.
+This assumption has important consequences in address management for three different aspects:
+1. management of multicast communication;
+2. network self-configuration;
+3. creation and manipulation of local link addresses.
+After having established the criteria for constructing and managing IPv6 addresses on IEEE
+802.15.4 networks, it is necessary to illustrate how the transmission of IPv6 packets is feasible.
+6 LoWPAN describes two basic mechanisms: an adaptive layer for inserting only the necessary
+information, and a header compression scheme. These techniques are aimed at reducing the
+information to be sent over the radio as much as possible in order to minimize the overall network
+overhead.
+
+4.1
+
+Adaptive layer
+
+In order to be able to transfer the information from the upper layers to the lower ones, an adaptive
+layer will incrementally build the packet according to the IP philosophy (inserting additional
+information only when required). For this purpose, the 6 LoWPAN packet has an optional initial
+part, consisting of a stack of headers describing the type of packet being transmitted. The stack
+includes:
+1. a support header for communications over mesh networks;
+2. a header for broadcast communications;
+3. a header for handling packet fragmentation.
+All headers are optional; any of the three headers, or none at all, may appear in a 6 LoWPAN
+packet. The optionality does not imply processing or interpretation discretion: there is, in fact,
+a packet construction scheme that the headers must follow. The sequence of headers is shown in
+Figure 4.
+
+5
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+Figure 4 . 6 LoWPAN optional headers.
+
+6 LoWPAN inherits from IPv6 a mechanism for resolving the ambiguity that arises from the
+the possible presence of multiple optional headers: the use of the dispatch, an additional byte
+that always precedes the actual headers and allows their recognition and consequently the correct
+interpretation.
+The mesh header is present in packets that use a mesh routing protocol to route them and
+does not specify which mesh routing protocol to adopt, but is merely a medium for encoding the
+information needed for any mesh routing protocol.
+An optional header often used in combination with the previous one is reserved for broadcast
+communications. The header ends with a byte used for a Sequence Number field that is set by the
+source of the transmission and is used to recognize duplicate packets.
+A packet fragmentation mechanism is required to encapsulate IPv6 packets, up to 1280 bytes
+long, within IEEE 802.15.4 packets whose available payload varies from 81 to 102 bytes.
+
+4.2
+
+Header compression
+
+In the worst case, only 81 bytes are available, for the upper layers, in an IEEE 802.15.4 frame.
+Considering that the IPv6 header occupies 40 bytes, only 41 bytes would be left for the data of the
+upper layers. If the UDP protocol is also used, we have to consider an additional header of 8 bytes
+and therefore only 33 bytes for the application layer. The adaptive layer, described in Subsection
+4.1, further reduces the available space, requiring at least one dispatch byte to encapsulate the
+uncompressed IPv6 header.
+It is crucial that a header compression mechanism is indispensable in order to use IPv6 protocol
+in a rational way on IEEE 802.15.4 networks.
+The compression mechanism of the IPv6 header is called HC1 9 and is possible when devices are
+already part of a 6 LoWPAN network and share the network’s prefix. This allows to implement a
+simple and effective compression mechanism that does not require the use of any specific algorithm
+but is obtained by simply eliminating shared or redundant information from the packet.
+The UDP Header Compression mechanism is beyond the scope of this report.
+
+9
+
+HC1 stands for Header Compression 1.
+
+6
+
+INTERNET OF THINGS AND SMART CITIES
+
+5
+
+Luca Masiero
+
+Routing: An open research field
+
+This last section opens a window on a research topic that is currently debated in the scientific
+community.
+I will provide, after having studied the scientific articles listed in the References section, a
+personal analysis of the most important requirements for an effective 6 LoWPAN routing strategy,
+highlighting ideas, that can be applied to the Internet of Things, acquired from other University
+courses followed in the two last years of my academic career.
+
+5.1
+
+Routing: General framework
+
+The main criteria, identified by combining the contributions from [2] and [3], that 6 LoWPAN
+routing protocols have to satisfy are the following:
+• support of different types of communication (unicast, anycast or multicast);
+• constraint-based and adaptive routing with different network conditions;
+• support of different traffic: multipoint-to-point, point-to-multipoint and point-to-point traffic;
+• scalability, security and performance.
+When looking at security problems of 6 LoWPAN, routing is one of the weakest aspects because
+nodes are easy to be compromised while they are frequently moving in the networks, and contact
+with new and, most of the times, unauthenticated neighbours could represent possible attack
+scenarios.
+
+5.2
+
+Routing: Mesh-Under vs Route-Over
+
+Within the IETF, a major conceptual difficulty has not only been on the routing policy to be
+adopted but also on how this should be related to the network’s protocol used in WSNs10 . Two
+are the identified ”schools of thought”: the first one argues that routing mechanisms should be
+adopted below the network protocol (Mesh-under ), the second states that the routing protocol
+should be directly based on the network protocol (Route-over ).
+
+Figure 5 . Mesh-under and Route-over routing.
+
+Even though the distinction is not trivial, these mechanisms guarantee interoperability, allowing
+packets routing also between different PANs and Link Layers, such as IEEE 802.15.4, IEEE 802.11,
+IEEE 802.16 and so on.
+10
+
+WSN stands for Wireless Sensor Network.
+
+7
+
+INTERNET OF THINGS AND SMART CITIES
+
+5.3
+
+Luca Masiero
+
+Routing: Topology
+
+RPL11 components include WSN nodes, that act as hosts or intermediate routers for transmitting
+packets, and a local border router in the network’s edge that communicates through a common
+backbone.
+6 LoWPAN nodes connect with a Directed Acyclic Graph (DAG) topology to prevent any
+network loop. This DAG is divided into Destination Oriented DAGs (DODAGs), where the roots
+of these DODAGs usually are local border routers connected together and to the Internet through
+the backbone. The DODAG can be considered as a logical configuration of physical nodes (a node
+can join multiple DODAGs to support routing optimization).
+Figure 6 shows in detail this general architecture.
+
+Figure 6 . 6 LoWPAN architecture.
+
+Nodes in DODAG select and optimize the path using some node/link metrics and constraints
+(known as DODAG instances) such as node state, node energy, hop count, throughput and latency.
+The node uses objective functions to point out particular metrics chosen for optimizing routes,
+represented by Objective Code Point (OCP). On the basis of objective functions and path cost
+towards the root, the rank (or depth) of nodes is calculated to differentiate their relationship (e.g.,
+nodes with the same rank can be sibling nodes, while consecutive rank nodes can be parents and
+child).
+
+11
+
+RPL stands for Routing Protocol for Low-Power and Lossy Networks.
+
+8
+
+INTERNET OF THINGS AND SMART CITIES
+
+5.4
+
+Luca Masiero
+
+Routing: Main requirements
+
+The main features and requirements needed in order to develop an effective routing strategy, shown
+in Figure 8 , are discussed by building a ”bridge” between different fields, letting the reader
+understand that there exists a link between apparently unrelated subjects:
+
+Figure 7 . Taxonomy of routing requirement in 6 LoWPAN.
+
+• the node should support sleep mode (equal to a periodical hibernation) for battery saving.
+This concept is taken into account when considering neural networks’ optimization applied
+to the Internet of Things: the dropout is a computationally inexpensive but powerful method
+of regularizing models.
+The basic idea consists in randomly removing input and hidden units (also called neurons
+or nodes) during processing of each pattern; in particular a binary ”mask” (made by zeros
+and ones) is sampled and defines which unit should be dropped out according to a fixed
+probability hyperparameter p that is usually in the range [0.1, 0.6]. In this way the network’s
+units will be forced to learn, on the one hand, the most important features by not relying on
+the same nodes, and on the other, a feature that is good in many different contexts.
+A similar reasoning can be applied to IoT and the sleep mode of nodes. It could be developed
+a routing algorithm that takes into account different paths depending on the fact that some
+nodes could effectively be ”shut down” and unavailable for the routing strategy at a specific
+moment.
+
+9
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+Figure 8 . Dropout applied to a neural network made by two hidden layers.
+
+• generated overhead on data packets should be low: routing overhead should consequently
+be lower in order to conserve energy;
+• small MTU (Maximum Transmission Unit): small packet size requested;
+• deep power management: high duty cycle in order to optimize energy savings.
+The concept of dropout also results in an interesting energy saving technique letting the
+network use a limited number of nodes instead of the whole available quantity. The concept
+of power management has been taken into account when developing an IoT Keyword Spotting
+algorithm for detecting spoken words from a person to a device/program (e.g., Alexa or Google
+Assistant)12 .
+• heterogeneous capabilities: protocols should be compatible with many physical devices
+interacting with each other and the Internet;
+• need of reactive protocols in case of failure or low network connectivity. A routing algorithm
+is one of the most important factors that directly impact a network’s performance. To be
+kept in mind is the fact that conventional routing algorithms such as Hierarchical Routing
+(Hi-Low), 6 LoWPAN Ad-Hoc On-Demand Distance Vector Routing (LOAD) or Dynamic
+MANET On-Demand for 6 LoWPAN Routing (DYMO-Low) do not consider the network
+data history (e.g., equipment failures or overloaded paths).
+For this reason, Reinforcement Learning could be particularly useful providing advantages
+using network data: the intelligent agent should, to accomplish the given task, be able to
+learn how to behave in a dynamic environment through a huge number of iterations. Just
+to provide a simple example, an agent who makes a certain choice can receive a reward or a
+punishment whether the choice was good or bad, respectively (directly influencing the inner
+agent’s state). Reinforcement Learning techniques applied to the routing problem related
+to 6 LoWPAN can improve the steps to the decision making process of a good path choice,
+leading to a final better network performance.
+• dynamic adapting and multi-topology routing. From Parallel Computing the concept
+of graph embedding can be useful.
+Let G = (V, E) and H = (W, F ) be two graphs. An embedding, E = (φ, ψ), of G (guest) and
+H (host) is an ordered pair of functions where:
+– φ : V −→ W ;
+– ψ : E −→ set of simple paths of H, such that ψ(a, b) is a path from φ(a) to φ(b); φ is
+known as the placement function, while ψ is known as the routing function.
+12
+
+A deep analysis of the Keyword Spotting problem related to IoT (with a proposed solution very close to
+the state of the art model) was presented for the final grade by Luca Masiero and Stefano Ivancich for the
+Human Data Analytics course, held by Professor Michele Rossi during the second semester of the Academic
+Year 2019/2020. The written report, the presentation and a demo are available at the following website:
+https://github.com/ivaste/KeyWordSpotting.
+
+10
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+The concept of graph embedding E can be associated to IoT routing strategies when thinking
+about the load of a node and dilation and congestion of edges.
+Logical topologies can be developed considering the advantage given by, for instance, a
+hypercube-stylish way of placing nodes instead of preferring a linear array or a 2-D mesh;
+a 3-D mesh topology could be more effective when considering the characteristics of certain
+graphs, such as complete graphs (indicated with KN , where N is the total number of nodes)
+or ring topologies. A very important theoretical result states that, keeping in mind the
+definition provided above of the graph embedding E: if load l(E) = l, dilation d(E) = d and
+congestion c(E) = c then, for any choice of the message schedule, the worst-case slowdown of
+the embedding-based simulation procedure satisfies the lower bound
+S = Ω(l + d + c)
+and the routing strategies should be developed considering bandwidth limits (along with the
+theoretical result already discussed).
+• flexibility, minimality, scalability, confidentiality and authentication are the last, but
+not least, most important characteristics to keep in mind when developing a routing strategy
+for 6 LoWPAN.
+To provide and example, in [6] the authors consider matrix multiplication, a fundamental
+building block of many distributed Machine Learning algorithms, as a remarkable computation
+example to show that an IoT system can effectively resist to pollution attacks 13 . The developed
+algorithms (for both cloud and user) shew that an IoT system could resist to attacks with a
+probability close to 100% by applying transformations on the input data by adding a huge
+number of rows to the matrices (then shuffled in a smart way) without limiting the overall
+performance of the system. Confidentiality and authentication for the users where ensured
+for the whole process14 .
+
+Final thoughts & Acknowledgements
+With this report I learnt how to research and select papers from scientific literature, delivering a
+report written with LATEX. It took a while to deeply understand the standard under consideration,
+6 LoWPAN, also helped by the adopted book, Internet of Things: Concepts and System Design
+written by Milan Milenkovic.
+With this work I just scratched the surface of a so vast topic and the ideas presented here could
+be considered for future implementations and personal projects.
+This report is presented for the final grade of the Internet of Things and Smart Cities course,
+held by Professor Lorenzo Vangelista at the University of Padova in the Academic Year 2020/2021.
+
+13
+A pollution attack is a particular kind of attack in which each intermediate result received by the user may be
+maliciously modified by an edge device.
+14
+A deep analysis of [6] was presented for the final grade by Luca Masiero for the Distributed Systems course, held
+by Professor Carlo Ferrari during the first semester of the Academic Year 2020/2021.
+
+11
+
+INTERNET OF THINGS AND SMART CITIES
+
+Luca Masiero
+
+References
+[1] Milenkovic, Milan. Internet of Things: Concepts and System Design. 2020, Spinger.
+[2] Le, Anhtuan & Loo, Jonathan & Lasebae, A. & Aiash, Mahdi & Luo, Yuan. (2012). 6LoWPAN:
+A study on QoS security threats and countermeasures using intrusion detection system approach.
+International Journal of Communication Systems. 10.1002/dac.2356.
+[3] Vinay Kumar, Sudarshan Tiwari, ”Routing in IPv6 over Low-Power Wireless Personal Area
+Networks (6LoWPAN): A Survey”, Journal of Computer Networks and Communications, vol. 2012,
+Article ID 316839, 10 pages, 2012. https://doi.org/10.1155/2012/316839
+[4] W. Xie et al., ”Routing Loops in DAG-Based Low Power and Lossy Networks,” 2010 24th
+IEEE International Conference on Advanced Information Networking and Applications, Perth,
+WA, Australia, 2010, pp. 888-895, doi: 10.1109/AINA.2010.126.
+[5] K. Hong and L. Choi, ”DAG-based multipath routing for mobile sensor networks,” ICTC 2011,
+Seoul, Korea (South), 2011, pp. 261-266, doi: 10.1109/ICTC.2011.6082593.
+[6] M. Fu, J. Wang, J. Zhou, J. Wang, K. Lu and X. Zhou, ”A Null-Space-Based Verification
+Scheme for Coded Edge Computing against Pollution Attacks,” 2019 IEEE 25th International
+Conference on Parallel and Distributed Systems (ICPADS), Tianjin, China, 2019, pp. 454-461,
+doi: 10.1109/ICPADS47876.2019.00071.
+
+12
+
+
