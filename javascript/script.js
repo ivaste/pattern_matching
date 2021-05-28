@@ -83,10 +83,11 @@ function btn_solve_click(evt){
     text=text.toLowerCase();  // to lower case
 
     console.log("Reference Text "+i+": "+text.split(" ").length+" words");
-
+    var nwords=text.split(" ").length;
     for (var j=0; j<string_to_check.length-window_size;j++){
-      //console.log("\tMatching: "+Math.floor(10*j/string_to_check.length)+"%");
-      
+      //console.log("\tMatching: "+Math.floor(100*j/string_to_check.length)+"%");
+      document.getElementById('txt').innerHTML = "Reference Text "+i+": "+nwords+" words"+"\n\tMatching: "+Math.floor(100*j/string_to_check.length)+"%";
+
       var pattern=string_to_check.slice(j,j+window_size).join(" ");
       //If found a match, set the corresponding mask indexes to true
       if (knuthMorrisPratt(text,pattern)){
@@ -114,6 +115,12 @@ function btn_solve_click(evt){
 
   solution=solution.join(" ");
 
+  //Calculate percentage
+  //var percentage=Math.round(100*sum(ans))
+  //print(str(round(100*sum(ans)/len(ans),2))+"% ("+str(sum(ans))+"/"+str(len(ans))+" words) of document match, with windw size="+str(window_size),flush=True)
+
+
+  // Display solution on html
   document.getElementById('txt').innerHTML = solution;
 
 }
