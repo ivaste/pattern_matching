@@ -2,14 +2,19 @@
 <html>
 <head>
   <title>Pattern matching</title>
-  <style type="text/css">
+
+  <!-- Bootsrap imports-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  
+  <!--<style type="text/css">
     .drp_zone {
     display: inline-block;
     border: 5px solid blue;
     width:  200px;
     height: 100px;
     }
-  </style>
+  </style>-->
 
   <script src="kmp.js"></script>
 
@@ -18,15 +23,44 @@
 <body>
   <h1>Patter Matching</h1>
 
-  <span id="dropZone_texts" class="drp_zone">Drop <strong>Reference files</strong> here</span>
-  <span id="dropZone_pattern" class="drp_zone">Drop Single <strong>File to check</strong> here</span>
+  <div class="container">
+    <div class="row">
+
+      <div class="col">
+        <div id="dropZone_texts" class="card text-white bg-primary mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Reference Files</h5>
+            <p id="ref_files_list" class="card-text">Drag & Drop Reference files here (<strong>.txt</strong>)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div id="dropZone_pattern" class="card text-white bg-secondary">
+          <div class="card-body">
+            <h5 class="card-title">File to check</h5>
+            <p id="patter_file" class="card-text">Drag & Drop the File to check here (<strong>.txt</strong>)</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="d-grid gap-2">
+        <button id="btn_solve" class="btn btn-primary">Find similarities</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <p id="solution"></p>
+      </div>
+    </div>
+
+  </div>
   
-  <br><br>
-
-  <button id="btn_solve">Solve</button>
-
-  <hr>
-  <output id="txt"></output>
+  
 
   <script src="script.js"></script>
   

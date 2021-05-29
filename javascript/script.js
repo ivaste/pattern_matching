@@ -11,6 +11,7 @@ var reference_files=[];
 var remaining=-1;   // remaining texts to load
 var string_to_check="";        // String to check
 var window_size=4;
+var reference_file_list=[];
 
 // Dropped PATTERN FILE
 function handleFileSelect_pattern(evt) {
@@ -24,6 +25,8 @@ function handleFileSelect_pattern(evt) {
     console.log(string_to_check);
   };
   reader.readAsText(file_to_read);    // Start reading the file
+  document.getElementById('patter_file').innerHTML = file_to_read.name;// Display on the html the name of the file
+
 }
 
 // Dropped REFERENCE FILES
@@ -33,6 +36,7 @@ function handleFileSelect_texts(evt) {
   var files = evt.dataTransfer.files; // FileList object. Is a FileList of File objects.
   remaining=files.length;
   for (var i = 0, file_to_read; file_to_read = files[i]; i++) {
+    reference_file_list.push("<li>"+file_to_read.name+"</li>");
     var reader= new FileReader();       // istantiate FileReader
     reader.onload = function (e) {      // function called when file is fully loaded
       remaining-=1;                     // Reduce by 1 the amount of remaining files to read
@@ -41,7 +45,9 @@ function handleFileSelect_texts(evt) {
       console.log(reference_file);
       //When finished opening all reference_files
       if (remaining===0){
-        console.log(reference_files)
+        console.log(reference_files);
+        // Display on the html the list of names of the files
+        document.getElementById('ref_files_list').innerHTML = '<ul>' + reference_file_list.join('') + '</ul>';
       }
     };
     reader.readAsText(file_to_read);    // Start reading the file
@@ -86,7 +92,7 @@ function btn_solve_click(evt){
     var nwords=text.split(" ").length;
     for (var j=0; j<string_to_check.length-window_size;j++){
       //console.log("\tMatching: "+Math.floor(100*j/string_to_check.length)+"%");
-      document.getElementById('txt').innerHTML = "Reference Text "+i+": "+nwords+" words"+"\n\tMatching: "+Math.floor(100*j/string_to_check.length)+"%";
+      document.getElementById('solution').innerHTML = "Reference Text "+i+": "+nwords+" words"+"\n\tMatching: "+Math.floor(100*j/string_to_check.length)+"%";
 
       var pattern=string_to_check.slice(j,j+window_size).join(" ");
       //If found a match, set the corresponding mask indexes to true
@@ -105,9 +111,10 @@ function btn_solve_click(evt){
   var solution=[];
   for (let i = 0; i < ans.length; i++) {
     if (ans[i]){
-      solution.push('<span style="color: red">');
+      /*solution.push("<mark>"+string_to_check[i]+"</mark>")*/
+      solution.push('<strong style="color: red">');
       solution.push(string_to_check[i]);
-      solution.push("</span>");
+      solution.push("</strong>");
     }else{
       solution.push(string_to_check[i]);
     }
@@ -121,7 +128,7 @@ function btn_solve_click(evt){
 
 
   // Display solution on html
-  document.getElementById('txt').innerHTML = solution;
+  document.getElementById('solution').innerHTML = solution;
 
 }
 
