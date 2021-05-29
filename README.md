@@ -39,6 +39,8 @@
   <p align="center">
     An awesome script for matching words of one document to other documents!
     <br />
+    <a href="https://document-matching.netlify.app/">Live Demo</a>
+    ·
     <a href="https://github.com/ivaste/pattern_matching/issues">Report Bug</a>
     ·
     <a href="https://github.com/ivaste/pattern_matching/issues">Request Feature</a>
@@ -64,6 +66,7 @@
     </li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#todo">Todo</a></li>
   </ol>
 </details>
 
@@ -73,12 +76,14 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://github.com/ivaste/pattern_matching)
 
-Find text matching of one `.txt` file given several other `.txt` files.
+Find similarities on a `.txt` file, given several other `.txt` files.
 
 ### Built With
 
-* [Python 3](https://www.python.org/)
-* [Knuth–Morris–Pratt algorithm](https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm) (In future release will be used a better algorithm)
+* [HTML5](https://www.w3.org/TR/html52/)
+* [Bootstrap 5](https://getbootstrap.com/)
+* [JavaScript](https://www.javascript.com/)
+* [Knuth–Morris–Pratt algorithm](https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm) (In future releases will be used a better algorithm)
 
 
 
@@ -93,16 +98,14 @@ Find text matching of one `.txt` file given several other `.txt` files.
    ```
 
 2. Convert your `.pdf` files in `.txt` with [https://pdftotext.com/](https://pdftotext.com/)  (In future releases this step will be automated)
-2. Put your reference `.txt` files in a directory inside the `reference_files` directory
 
-3. Put the `.txt` file to check inside the `file_to_check` directory
+3. Open the `index.html` file with your browser
 
-4. Run the script
-   ```sh
-   python pattern_match.py "files_to_check/your_file.txt" "reference_files/your_directory"
-   ```
+4. Drag&Drop your reference `.txt` files in the Reference File Box
 
-5. The solution will be stored has a `.html` file inside the `solution` directory
+5. Drag&Drop the `.txt` file in the File to Check Box
+
+6. Click on the `Find Similarities` button
 
 
 <!-- CONTRIBUTING -->
@@ -126,4 +129,14 @@ Stefano Ivancich - [stefano-ivancich](https://www.linkedin.com/in/stefano-ivanci
 Project Link: [https://github.com/ivaste/pattern_matching](https://github.com/ivaste/pattern_matching)
 
 
+
+
+## Todo
+
+- [ ] Check that the user uploaded the right file type (.txt)
+- [ ] Disable Button when click on it
+- [ ] Progress bar when calculating [link](https://stackoverflow.com/a/64404164)
+- [ ] Better pattern matching algorithm
+- [ ] Let user choose window size
+- [ ] Convert automatically from PDF (or other) to txt
 
