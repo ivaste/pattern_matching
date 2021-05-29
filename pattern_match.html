@@ -6,30 +6,40 @@
   <!-- Bootsrap imports-->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-  
-  <!--<style type="text/css">
-    .drp_zone {
-    display: inline-block;
-    border: 5px solid blue;
-    width:  200px;
-    height: 100px;
-    }
-  </style>-->
 
   <script src="kmp.js"></script>
 
 </head>
 
 <body>
-  <h1>Patter Matching</h1>
+  
 
   <div class="container">
     <div class="row">
+      <div class="col">
+        <h1>Similarities between Documents</h1>
+        
+        <p>
+          This simple website allows you to find similarities between a document and a list of reference documents.
+        </p>
+        <div class="card">
+          <div class="card-body">
+            <strong>Usage:</strong>
+            <ol>
+              <li>First convert your <mark>.pdf</mark> files in <mark>.txt</mark> with <a href="https://pdftotext.com/">https://pdftotext.com/</a>. (In future releases this step will be automated)</li>
+              <li>Then Drag&Drop your files in the boxes below.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
 
       <div class="col">
         <div id="dropZone_texts" class="card text-white bg-primary mb-3">
           <div class="card-body">
-            <h5 class="card-title">Reference Files</h5>
+            <h5 class="card-title">Reference Files (.txt)</h5>
             <p id="ref_files_list" class="card-text">Drag & Drop Reference files here (<strong>.txt</strong>)</p>
           </div>
         </div>
@@ -38,7 +48,7 @@
       <div class="col">
         <div id="dropZone_pattern" class="card text-white bg-secondary">
           <div class="card-body">
-            <h5 class="card-title">File to check</h5>
+            <h5 class="card-title">File to check (.txt)</h5>
             <p id="patter_file" class="card-text">Drag & Drop the File to check here (<strong>.txt</strong>)</p>
           </div>
         </div>
@@ -48,17 +58,27 @@
 
     <div class="row justify-content-center">
       <div class="d-grid gap-2">
-        <button id="btn_solve" class="btn btn-primary">Find similarities</button>
+        <button id="btn_solve" class="btn btn-success btn-lg disabled">Find similarities</button>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
       <div class="col">
-        <p id="solution"></p>
+        <div id="solution">
+
+        </div>
       </div>
     </div>
 
   </div>
+  
+  <footer>
+
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+      © <script>document.write(new Date().getFullYear())</script> Copyright:
+      <a class="text-reset fw-bold" href="https://github.com/ivaste">github.com/ivaste</a>
+    </div>
+  </footer>
   
   
 

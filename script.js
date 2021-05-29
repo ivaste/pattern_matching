@@ -13,6 +13,15 @@ var string_to_check="";        // String to check
 var window_size=4;
 var reference_file_list=[];
 
+var btn_solve = document.getElementById('btn_solve');
+
+function enableButton(){
+  if (remaining!==0 ||string_to_check.length===0){
+    return;
+  }
+  btn_solve.classList.remove("disabled");
+}
+
 // Dropped PATTERN FILE
 function handleFileSelect_pattern(evt) {
 	evt.stopPropagation();
@@ -23,10 +32,11 @@ function handleFileSelect_pattern(evt) {
   reader.onload = function (e) {      // function called when file is fully loaded
     string_to_check=e.target.result;  // assign to the global variable the string of the file to check
     console.log(string_to_check);
+    enableButton();                   //  try to enable button solve
   };
   reader.readAsText(file_to_read);    // Start reading the file
   document.getElementById('patter_file').innerHTML = file_to_read.name;// Display on the html the name of the file
-
+  
 }
 
 // Dropped REFERENCE FILES
@@ -45,6 +55,7 @@ function handleFileSelect_texts(evt) {
       console.log(reference_file);
       //When finished opening all reference_files
       if (remaining===0){
+        enableButton(); //Enable button solve.
         console.log(reference_files);
         // Display on the html the list of names of the files
         document.getElementById('ref_files_list').innerHTML = '<ul>' + reference_file_list.join('') + '</ul>';
@@ -61,6 +72,8 @@ function handleDragOver(evt) {
 	evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
+
+var updateDiv=document.getElementById('solution');
 // When CLICK on SOLVE BUTTON
 function btn_solve_click(evt){
   if (remaining!==0){
@@ -71,6 +84,9 @@ function btn_solve_click(evt){
     alert("File to check not loaded yet");
     return;
   }
+
+  btn_solve.classList.add("disabled");
+
   console.log("calculating ...");
 
   //Preprocess string_to_check
@@ -92,7 +108,6 @@ function btn_solve_click(evt){
     var nwords=text.split(" ").length;
     for (var j=0; j<string_to_check.length-window_size;j++){
       //console.log("\tMatching: "+Math.floor(100*j/string_to_check.length)+"%");
-      document.getElementById('solution').innerHTML = "Reference Text "+i+": "+nwords+" words"+"\n\tMatching: "+Math.floor(100*j/string_to_check.length)+"%";
 
       var pattern=string_to_check.slice(j,j+window_size).join(" ");
       //If found a match, set the corresponding mask indexes to true
@@ -123,12 +138,27 @@ function btn_solve_click(evt){
   solution=solution.join(" ");
 
   //Calculate percentage
-  //var percentage=Math.round(100*sum(ans))
-  //print(str(round(100*sum(ans)/len(ans),2))+"% ("+str(sum(ans))+"/"+str(len(ans))+" words) of document match, with windw size="+str(window_size),flush=True)
+  var div_solution=document.getElementById('solution')
+  var matches=0;
+  for (let i = 0; i < ans.length; i++) {
+    if (ans[i]) {matches++;}    
+  }
+  var perc=Math.round(100*matches/ans.length,2);
 
+  //Display percentage
+  var p=document.createElement('p');
+  p.innerHTML = "<strong>"+perc+"% ("+matches+"/"+ans.length+" words) of document match, with window size="+window_size+"</strong>";
+  div_solution.appendChild(p);
 
-  // Display solution on html
-  document.getElementById('solution').innerHTML = solution;
+  //Display solution
+  var newdiv=document.createElement("div");
+  newdiv.classList.add("card");
+  var newdiv2=document.createElement("div");
+  newdiv2.classList.add("card-body");
+  newdiv2.innerHTML=solution;
+  newdiv.appendChild(newdiv2);
+  div_solution.appendChild(newdiv);
+
 
 }
 
@@ -143,5 +173,4 @@ dropZone_texts.addEventListener('dragover', handleDragOver, false);
 dropZone_texts.addEventListener('drop', handleFileSelect_texts, false);
 
 // Setup button listener.
-var btn_solve = document.getElementById('btn_solve');
 btn_solve.addEventListener('click',btn_solve_click);
