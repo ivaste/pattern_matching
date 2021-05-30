@@ -76,23 +76,56 @@ print("Window size:",window_size,"words")
 ######################################################
 ans=[False]*len(string_to_check)
 
+
+#TRIE
+trie={}
+#insert pattern in the trie
+for i in range(len(string_to_check)-window_size):
+    pattern=" ".join(string_to_check[i:i+window_size])
+    n=trie
+    for c in pattern:
+        if c not in n: n[c]={}
+        n=n[c]
+    if "pattern" not in n:n["pattern"]=[]
+    n["pattern"].append(i)
+
+
+occurencies=set()
 #for each reference file
 for i in range(len(reference_files)):
     reference_file=reference_files[i]
 
     #Read reference file
     f = open(reference_file, "r",encoding='utf-8')
-    text=f.read().lower()
+    text=f.read().replace("\n", " ").lower()
     f.close()
 
     print("Reference Text "+str(i)+":",str(len(text.split(" "))),"words")
+    """ KMP
     for i in range(len(string_to_check)-window_size):
         print("\tMatching: "+str(100*i//len(string_to_check))+"%",end="\r", flush=True)
 
         pattern=" ".join(string_to_check[i:i+window_size])
         if KMP(text,pattern):
             for j in range(i,i+window_size):
-                ans[j]=True
+                ans[j]=True"""
+
+    #Trie
+    for j in range(len(text)):
+        n=trie
+        k=j
+        while k<len(text) and text[k] in n:
+            n=n[text[k]]
+            k+=1
+            if "pattern" in n:
+                for e in n["pattern"]:
+                    occurencies.add(e)
+    
+for i in occurencies:
+    for j in range(i,i+window_size):
+        ans[j]=True
+            
+    
 
 
 print(str(round(100*sum(ans)/len(ans),2))+"% ("+str(sum(ans))+"/"+str(len(ans))+" words) of document match, with windw size="+str(window_size),flush=True)
