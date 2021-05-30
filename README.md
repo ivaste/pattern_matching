@@ -139,4 +139,4 @@ Project Link: [https://github.com/ivaste/pattern_matching](https://github.com/iv
 - [ ] Better pattern matching algorithm
 - [ ] Let user choose window size
 - [ ] Convert automatically from PDF (or other) to txt. [link1](https://www.convertapi.com/pdf-to-txt#snippet=js)
-
+- [ ] Remove non ascii chars
