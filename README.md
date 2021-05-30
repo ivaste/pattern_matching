@@ -37,7 +37,7 @@
   <h3 align="center">Documents Pattern Matching</h3>
 
   <p align="center">
-    An awesome script for matching words of one document to other documents!
+    An awesome script for matching words of one document to other documents in order to detect plagiarism!
     <br />
     <a href="https://document-matching.netlify.app/">Live Demo</a>
     ·
@@ -76,14 +76,14 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://github.com/ivaste/pattern_matching)
 
-Find similarities on a `.txt` file, given several other `.txt` files.
+Find similarities on a `.txt` file, given several other `.txt` files, to detect plagiarism.
 
 ### Built With
 
 * [HTML5](https://www.w3.org/TR/html52/)
 * [Bootstrap 5](https://getbootstrap.com/)
 * [JavaScript](https://www.javascript.com/)
-* [Knuth–Morris–Pratt algorithm](https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm) (In future releases will be used a better algorithm)
+* Multiple pattern matching with a [Trie](https://en.wikipedia.org/wiki/Trie) (In future releases will be used a better algorithm, probably [Aho-Corasick](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm))
 
 
 
