@@ -133,10 +133,12 @@ Project Link: [https://github.com/ivaste/pattern_matching](https://github.com/iv
 
 ## Todo
 
-- [ ] Check that the user uploaded the right file type (.txt)
+- [x] Multiple pattern matching algorithm with Trie
+- [ ] Check if the user uploaded the right file type (.txt)
+- [ ] Convert automatically from PDF (or other) to txt. [link1](https://www.convertapi.com/pdf-to-txt#snippet=js)
 - [ ] Disable Button when click on it
 - [ ] Progress bar when calculating. [link1](https://stackoverflow.com/a/64404164) [link2-promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-- [ ] Better pattern matching algorithm
-- [ ] Let user choose window size
-- [ ] Convert automatically from PDF (or other) to txt. [link1](https://www.convertapi.com/pdf-to-txt#snippet=js)
 - [ ] Remove non ascii chars
+- [ ] Better pattern matching algorithm (aho corasick)
+- [ ] Let user choose window_size
+- [ ] Multiple matching with different windows sizes and then combine the results

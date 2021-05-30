@@ -99,28 +99,55 @@ function btn_solve_click(evt){
   var ans=new Array(string_to_check.length);
   for (var i = 0; i < ans.length; ++i) { ans[i] = false; }
 
+  //Insert patterns in the Trie
+  var trie={};
+  for (var i=0; i<string_to_check.length-window_size;i++){
+    var pattern=string_to_check.slice(i,i+window_size).join(" ");
+    var n=trie;
+    for (let j=0; j<pattern.length;j++){
+      var c=pattern[j];
+
+      if (! (c in n)){n[c]={}}
+      n=n[c];
+    }
+    if (! ("pattern" in n)){n["pattern"]=[]}
+    n["pattern"].push(i);
+  }
+  console.log("Trie",trie);
+
+  let occurencies = new Set();
   //for each reference file
   for (var i = 0, reference_file; reference_file = reference_files[i]; i++) {
     var text=reference_file.replace("\n", " ");
     text=text.toLowerCase();  // to lower case
 
     console.log("Reference Text "+i+": "+text.split(" ").length+" words");
-    var nwords=text.split(" ").length;
-    for (var j=0; j<string_to_check.length-window_size;j++){
-      //console.log("\tMatching: "+Math.floor(100*j/string_to_check.length)+"%");
 
-      var pattern=string_to_check.slice(j,j+window_size).join(" ");
-      //If found a match, set the corresponding mask indexes to true
-      if (knuthMorrisPratt(text,pattern)){
-        for (let k = j; k < j+window_size; k++) {
-          
-          ans[k]=true;
+    //For each char in the text, tranverse the trie
+    for (var j=0;j<text.length;j++){
+      var n=trie;
+      k=j;
+      while(k<text.length & (text[k] in n)){
+        n=n[text[k]];
+        k++;
+        if ("pattern" in n){
+          n["pattern"].forEach(e => {
+            occurencies.add(e);
+          });
         }
       }
-
     }
 
   }
+
+  console.log(occurencies);
+  for (let i of occurencies){
+    for (let k = i; k < i+window_size; k++) {
+          
+      ans[k]=true;
+    }
+  }
+
 
   // Build solution
   var solution=[];
