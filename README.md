@@ -142,3 +142,4 @@ Project Link: [https://github.com/ivaste/pattern_matching](https://github.com/iv
 - [ ] Better pattern matching algorithm (aho corasick)
 - [ ] Let user choose window_size
 - [ ] Multiple matching with different windows sizes and then combine the results
+- [ ] Re-Do everithing with react
